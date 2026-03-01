@@ -71,6 +71,14 @@
         cursor: pointer;
       }
 
+      select {
+        background: rgba(7, 16, 14, 0.85);
+        color: #ecfdf3;
+        border: 1px solid rgba(109, 226, 175, 0.6);
+        padding: 0.2rem 0.35rem;
+        border-radius: 6px;
+      }
+
       button:hover {
         filter: brightness(1.05);
       }
@@ -124,6 +132,7 @@
         <div class="stats">
           <span class="pill">Score: <strong id="score">0</strong></span>
           <span class="pill">Highscore: <strong id="high-score">0</strong></span>
+          <label class="pill" for="speed-select">Snelheid: <select id="speed-select" aria-label="Kies snelheid in fps"><option value="10">10 fps</option><option value="30">30 fps</option><option value="60">60 fps</option></select></label>
           <span class="pill">Snelheid: <strong id="speed">8</strong> fps</span>
         </div>
         <button id="restart" type="button">Opnieuw starten</button>
@@ -139,12 +148,14 @@
 
     <script>
       const TILE_COUNT = 20;
+      const SPEED_OPTIONS = [10, 30, 60];
       const BASE_SPEED = 8;
       const MAX_SPEED = 16;
       const board = document.getElementById('board');
       const ctx = board.getContext('2d');
       const scoreEl = document.getElementById('score');
       const highScoreEl = document.getElementById('high-score');
+      const speedSelect = document.getElementById('speed-select');
       const speedEl = document.getElementById('speed');
       const overlay = document.getElementById('overlay');
       const restartBtn = document.getElementById('restart');
@@ -159,6 +170,7 @@
       let gameStarted;
       let paused;
       let loopTimer;
+      let selectedSpeed = Number(speedSelect.value);
 
       highScoreEl.textContent = highScore;
 
@@ -223,6 +235,7 @@
         paused = false;
         overlay.classList.remove('visible');
         clearInterval(loopTimer);
+        loopTimer = setInterval(tick, 1000 / selectedSpeed);
         loopTimer = setInterval(tick, 1000 / speedForScore());
       }
 
@@ -353,6 +366,18 @@
         if (nextDirection) {
           event.preventDefault();
           setDirection(nextDirection);
+        }
+      });
+
+      speedSelect.addEventListener('change', () => {
+        const nextSpeed = Number(speedSelect.value);
+        if (!SPEED_OPTIONS.includes(nextSpeed)) {
+          return;
+        }
+        selectedSpeed = nextSpeed;
+        if (gameStarted && !paused && !gameOver) {
+          clearInterval(loopTimer);
+          loopTimer = setInterval(tick, 1000 / selectedSpeed);
         }
       });
 
