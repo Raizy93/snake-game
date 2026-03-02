@@ -2,6 +2,7 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Klassieke Snake</title>
     <style>
@@ -21,6 +22,15 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: radial-gradient(circle at top, #1f3a37, #0c1413 65%);
         color: #ecfdf3;
+        padding: max(0.9rem, env(safe-area-inset-top))
+          max(0.9rem, env(safe-area-inset-right))
+          max(0.9rem, env(safe-area-inset-bottom))
+          max(0.9rem, env(safe-area-inset-left));
+      }
+
+      .game-shell {
+        width: min(94vw, 560px);
+        padding: 1rem;
       }
 
       .game-shell {
@@ -61,6 +71,8 @@
         font-size: 0.95rem;
       }
 
+      button,
+      select {
       button {
         border: none;
         padding: 0.55rem 0.95rem;
@@ -83,6 +95,10 @@
         filter: brightness(1.05);
       }
 
+      .board-wrap {
+        position: relative;
+      }
+
       canvas {
         width: 100%;
         max-width: 500px;
@@ -92,6 +108,7 @@
         background: #102220;
         border: 3px solid #2f6b54;
         border-radius: 12px;
+        touch-action: none;
       }
 
       .help {
@@ -108,6 +125,8 @@
         place-items: center;
         border-radius: 12px;
         background: rgba(0, 0, 0, 0.46);
+        text-align: center;
+        padding: 1rem;
       }
 
       .overlay.visible {
@@ -120,6 +139,48 @@
         font-weight: 700;
       }
 
+      .touch-controls {
+        margin: 1rem auto 0;
+        width: min(270px, 100%);
+        display: none;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+      }
+
+      .touch-btn {
+        min-height: 54px;
+        display: grid;
+        place-items: center;
+        font-size: 1.25rem;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .touch-btn.empty {
+        visibility: hidden;
+      }
+
+      .touch-btn:active {
+        transform: scale(0.97);
+      }
+
+      @media (max-width: 720px), (pointer: coarse) {
+        .game-shell {
+          width: min(96vw, 540px);
+          padding: 0.9rem;
+        }
+
+        .hud {
+          justify-content: center;
+        }
+
+        .touch-controls {
+          display: grid;
+        }
+
+        .help {
+          font-size: 0.88rem;
+        }
       .board-wrap {
         position: relative;
       }
@@ -132,6 +193,14 @@
         <div class="stats">
           <span class="pill">Score: <strong id="score">0</strong></span>
           <span class="pill">Highscore: <strong id="high-score">0</strong></span>
+          <label class="pill" for="speed-select"
+            >Snelheid:
+            <select id="speed-select" aria-label="Kies snelheid in fps">
+              <option value="10">10 fps</option>
+              <option value="30">30 fps</option>
+              <option value="60">60 fps</option>
+            </select>
+          </label>
           <label class="pill" for="speed-select">Snelheid: <select id="speed-select" aria-label="Kies snelheid in fps"><option value="10">10 fps</option><option value="30">30 fps</option><option value="60">60 fps</option></select></label>
           <span class="pill">Snelheid: <strong id="speed">8</strong> fps</span>
         </div>
@@ -140,6 +209,23 @@
       <div class="board-wrap">
         <canvas id="board" width="500" height="500" aria-label="Snake speelveld"></canvas>
         <div class="overlay visible" id="overlay">
+          <p>Druk op een pijltoets/WASD of gebruik touch-controls om te starten</p>
+        </div>
+      </div>
+
+      <section class="touch-controls" aria-label="Touch controls">
+        <button class="touch-btn empty" type="button" tabindex="-1" aria-hidden="true">·</button>
+        <button class="touch-btn" type="button" data-dir="up" aria-label="Omhoog">▲</button>
+        <button class="touch-btn empty" type="button" tabindex="-1" aria-hidden="true">·</button>
+        <button class="touch-btn" type="button" data-dir="left" aria-label="Links">◀</button>
+        <button class="touch-btn" type="button" id="pause-btn" aria-label="Pauze">⏯</button>
+        <button class="touch-btn" type="button" data-dir="right" aria-label="Rechts">▶</button>
+        <button class="touch-btn empty" type="button" tabindex="-1" aria-hidden="true">·</button>
+        <button class="touch-btn" type="button" data-dir="down" aria-label="Omlaag">▼</button>
+        <button class="touch-btn empty" type="button" tabindex="-1" aria-hidden="true">·</button>
+      </section>
+
+      <p class="help">Besturing: pijltjestoetsen of WASD · Pauze met spatie of ⏯</p>
           <p>Druk op een pijltoets of WASD om te starten</p>
         </div>
       </div>
@@ -156,6 +242,10 @@
       const scoreEl = document.getElementById('score');
       const highScoreEl = document.getElementById('high-score');
       const speedSelect = document.getElementById('speed-select');
+      const overlay = document.getElementById('overlay');
+      const restartBtn = document.getElementById('restart');
+      const pauseBtn = document.getElementById('pause-btn');
+      const touchDirectionButtons = document.querySelectorAll('[data-dir]');
       const speedEl = document.getElementById('speed');
       const overlay = document.getElementById('overlay');
       const restartBtn = document.getElementById('restart');
@@ -172,6 +262,7 @@
       let loopTimer;
       let selectedSpeed = Number(speedSelect.value);
 
+      highScoreEl.textContent = String(highScore);
       highScoreEl.textContent = highScore;
 
       function randomPosition() {
@@ -191,6 +282,15 @@
         } while (snake.some((part) => positionsEqual(part, food)));
       }
 
+      function updateBoardSize() {
+        const displaySize = Math.floor(Math.min(board.clientWidth || 500, 500));
+        if (board.width !== displaySize) {
+          board.width = displaySize;
+          board.height = displaySize;
+          render();
+        }
+      }
+
       function resetGame() {
         snake = [
           { x: 10, y: 10 },
@@ -204,6 +304,11 @@
         gameStarted = false;
         paused = false;
         placeFood();
+        updateBoardSize();
+        render();
+        scoreEl.textContent = '0';
+        overlay.classList.add('visible');
+        overlay.firstElementChild.textContent = 'Druk op een pijltoets/WASD of gebruik touch-controls om te starten';
         render();
         scoreEl.textContent = '0';
         speedEl.textContent = BASE_SPEED;
@@ -213,6 +318,7 @@
       }
 
       function setDirection(next) {
+        if (next.x + direction.x === 0 && next.y + direction.y === 0) {
         if (
           next.x + direction.x === 0 &&
           next.y + direction.y === 0
@@ -245,6 +351,7 @@
         if (paused) {
           clearInterval(loopTimer);
           overlay.classList.add('visible');
+          overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie of ⏯ om door te gaan)';
           overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie om door te gaan)';
         } else {
           overlay.classList.remove('visible');
@@ -369,6 +476,24 @@
         }
       });
 
+      const directionMap = {
+        up: { x: 0, y: -1 },
+        down: { x: 0, y: 1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 },
+      };
+
+      touchDirectionButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const nextDirection = directionMap[button.dataset.dir];
+          if (nextDirection) {
+            setDirection(nextDirection);
+          }
+        });
+      });
+
+      pauseBtn.addEventListener('click', togglePause);
+
       speedSelect.addEventListener('change', () => {
         const nextSpeed = Number(speedSelect.value);
         if (!SPEED_OPTIONS.includes(nextSpeed)) {
@@ -382,6 +507,9 @@
       });
 
       restartBtn.addEventListener('click', resetGame);
+      window.addEventListener('resize', updateBoardSize);
+
+      updateBoardSize();
 
       resetGame();
     </script>
