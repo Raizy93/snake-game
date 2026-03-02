@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Klassieke Snake</title>
     <style>
       :root {
@@ -30,6 +31,11 @@
       .game-shell {
         width: min(94vw, 560px);
         padding: 1rem;
+      }
+
+      .game-shell {
+        width: min(92vw, 560px);
+        padding: 1.25rem;
         border-radius: 16px;
         background: rgba(7, 16, 14, 0.85);
         border: 1px solid rgba(109, 226, 175, 0.28);
@@ -67,6 +73,7 @@
 
       button,
       select {
+      button {
         border: none;
         padding: 0.55rem 0.95rem;
         border-radius: 10px;
@@ -174,6 +181,8 @@
         .help {
           font-size: 0.88rem;
         }
+      .board-wrap {
+        position: relative;
       }
     </style>
   </head>
@@ -192,6 +201,8 @@
               <option value="60">60 fps</option>
             </select>
           </label>
+          <label class="pill" for="speed-select">Snelheid: <select id="speed-select" aria-label="Kies snelheid in fps"><option value="10">10 fps</option><option value="30">30 fps</option><option value="60">60 fps</option></select></label>
+          <span class="pill">Snelheid: <strong id="speed">8</strong> fps</span>
         </div>
         <button id="restart" type="button">Opnieuw starten</button>
       </section>
@@ -215,11 +226,17 @@
       </section>
 
       <p class="help">Besturing: pijltjestoetsen of WASD · Pauze met spatie of ⏯</p>
+          <p>Druk op een pijltoets of WASD om te starten</p>
+        </div>
+      </div>
+      <p class="help">Besturing: pijltjestoetsen of WASD · Spel pauzeert met spatie</p>
     </main>
 
     <script>
       const TILE_COUNT = 20;
       const SPEED_OPTIONS = [10, 30, 60];
+      const BASE_SPEED = 8;
+      const MAX_SPEED = 16;
       const board = document.getElementById('board');
       const ctx = board.getContext('2d');
       const scoreEl = document.getElementById('score');
@@ -229,6 +246,9 @@
       const restartBtn = document.getElementById('restart');
       const pauseBtn = document.getElementById('pause-btn');
       const touchDirectionButtons = document.querySelectorAll('[data-dir]');
+      const speedEl = document.getElementById('speed');
+      const overlay = document.getElementById('overlay');
+      const restartBtn = document.getElementById('restart');
 
       let snake;
       let direction;
@@ -243,6 +263,7 @@
       let selectedSpeed = Number(speedSelect.value);
 
       highScoreEl.textContent = String(highScore);
+      highScoreEl.textContent = highScore;
 
       function randomPosition() {
         return {
@@ -288,17 +309,30 @@
         scoreEl.textContent = '0';
         overlay.classList.add('visible');
         overlay.firstElementChild.textContent = 'Druk op een pijltoets/WASD of gebruik touch-controls om te starten';
+        render();
+        scoreEl.textContent = '0';
+        speedEl.textContent = BASE_SPEED;
+        overlay.classList.add('visible');
+        overlay.firstElementChild.textContent = 'Druk op een pijltoets of WASD om te starten';
         clearInterval(loopTimer);
       }
 
       function setDirection(next) {
         if (next.x + direction.x === 0 && next.y + direction.y === 0) {
+        if (
+          next.x + direction.x === 0 &&
+          next.y + direction.y === 0
+        ) {
           return;
         }
         pendingDirection = next;
         if (!gameStarted) {
           startGameLoop();
         }
+      }
+
+      function speedForScore() {
+        return Math.min(BASE_SPEED + Math.floor(score / 4), MAX_SPEED);
       }
 
       function startGameLoop() {
@@ -308,6 +342,7 @@
         overlay.classList.remove('visible');
         clearInterval(loopTimer);
         loopTimer = setInterval(tick, 1000 / selectedSpeed);
+        loopTimer = setInterval(tick, 1000 / speedForScore());
       }
 
       function togglePause() {
@@ -317,6 +352,7 @@
           clearInterval(loopTimer);
           overlay.classList.add('visible');
           overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie of ⏯ om door te gaan)';
+          overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie om door te gaan)';
         } else {
           overlay.classList.remove('visible');
           startGameLoop();
@@ -358,6 +394,11 @@
             highScoreEl.textContent = String(highScore);
             localStorage.setItem('snake-high-score', String(highScore));
           }
+
+          const newSpeed = speedForScore();
+          speedEl.textContent = String(newSpeed);
+          clearInterval(loopTimer);
+          loopTimer = setInterval(tick, 1000 / newSpeed);
         } else {
           snake.pop();
         }
@@ -469,6 +510,7 @@
       window.addEventListener('resize', updateBoardSize);
 
       updateBoardSize();
+
       resetGame();
     </script>
   </body>
