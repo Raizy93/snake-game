@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Klassieke Snake</title>
     <style>
       :root {
@@ -21,6 +22,8 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: radial-gradient(circle at top, #c9e9ff, #eaf6ff 65%);
         color: #11324a;
+        background: radial-gradient(circle at top, #1f3a37, #0c1413 65%);
+        color: #ecfdf3;
         padding: max(0.9rem, env(safe-area-inset-top))
           max(0.9rem, env(safe-area-inset-right))
           max(0.9rem, env(safe-area-inset-bottom))
@@ -33,6 +36,14 @@
         border-radius: 16px;
         background: rgba(235, 247, 255, 0.9);
         border: 1px solid rgba(90, 153, 201, 0.35);
+      }
+
+      .game-shell {
+        width: min(92vw, 560px);
+        padding: 1.25rem;
+        border-radius: 16px;
+        background: rgba(7, 16, 14, 0.85);
+        border: 1px solid rgba(109, 226, 175, 0.28);
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
       }
 
@@ -62,6 +73,8 @@
         border-radius: 999px;
         border: 1px solid rgba(90, 153, 201, 0.42);
         background: rgba(90, 153, 201, 0.16);
+        border: 1px solid rgba(109, 226, 175, 0.34);
+        background: rgba(109, 226, 175, 0.12);
         font-size: 0.95rem;
       }
 
@@ -72,6 +85,12 @@
         border-radius: 10px;
         background: #7ec8ff;
         color: #10324b;
+      button {
+        border: none;
+        padding: 0.55rem 0.95rem;
+        border-radius: 10px;
+        background: #6de2af;
+        color: #08301f;
         font-weight: 700;
         cursor: pointer;
       }
@@ -80,6 +99,9 @@
         background: rgba(235, 247, 255, 0.9);
         color: #11324a;
         border: 1px solid rgba(90, 153, 201, 0.7);
+        background: rgba(7, 16, 14, 0.85);
+        color: #ecfdf3;
+        border: 1px solid rgba(109, 226, 175, 0.6);
         padding: 0.2rem 0.35rem;
         border-radius: 6px;
       }
@@ -100,6 +122,8 @@
         margin: 0 auto;
         background: #dff1ff;
         border: 3px solid #5a99c9;
+        background: #102220;
+        border: 3px solid #2f6b54;
         border-radius: 12px;
         touch-action: none;
       }
@@ -109,6 +133,7 @@
         text-align: center;
         font-size: 0.92rem;
         color: #4e7694;
+        color: #b8d8c8;
       }
 
       .overlay {
@@ -118,6 +143,7 @@
         place-items: center;
         border-radius: 12px;
         background: rgba(74, 121, 159, 0.22);
+        background: rgba(0, 0, 0, 0.46);
         text-align: center;
         padding: 1rem;
       }
@@ -174,6 +200,8 @@
         .help {
           font-size: 0.88rem;
         }
+      .board-wrap {
+        position: relative;
       }
     </style>
   </head>
@@ -192,6 +220,13 @@
               <option value="10">10 fps</option>
             </select>
           </label>
+              <option value="10">10 fps</option>
+              <option value="30">30 fps</option>
+              <option value="60">60 fps</option>
+            </select>
+          </label>
+          <label class="pill" for="speed-select">Snelheid: <select id="speed-select" aria-label="Kies snelheid in fps"><option value="10">10 fps</option><option value="30">30 fps</option><option value="60">60 fps</option></select></label>
+          <span class="pill">Snelheid: <strong id="speed">8</strong> fps</span>
         </div>
         <button id="restart" type="button">Opnieuw starten</button>
       </section>
@@ -215,11 +250,18 @@
       </section>
 
       <p class="help">Besturing: pijltjestoetsen of WASD · Pauze met spatie of ⏯</p>
+          <p>Druk op een pijltoets of WASD om te starten</p>
+        </div>
+      </div>
+      <p class="help">Besturing: pijltjestoetsen of WASD · Spel pauzeert met spatie</p>
     </main>
 
     <script>
       const TILE_COUNT = 20;
       const SPEED_OPTIONS = [5, 8, 10];
+      const SPEED_OPTIONS = [10, 30, 60];
+      const BASE_SPEED = 8;
+      const MAX_SPEED = 16;
       const board = document.getElementById('board');
       const ctx = board.getContext('2d');
       const scoreEl = document.getElementById('score');
@@ -229,6 +271,9 @@
       const restartBtn = document.getElementById('restart');
       const pauseBtn = document.getElementById('pause-btn');
       const touchDirectionButtons = document.querySelectorAll('[data-dir]');
+      const speedEl = document.getElementById('speed');
+      const overlay = document.getElementById('overlay');
+      const restartBtn = document.getElementById('restart');
 
       let snake;
       let direction;
@@ -243,6 +288,7 @@
       let selectedSpeed = Number(speedSelect.value);
 
       highScoreEl.textContent = String(highScore);
+      highScoreEl.textContent = highScore;
 
       function randomPosition() {
         return {
@@ -288,17 +334,30 @@
         scoreEl.textContent = '0';
         overlay.classList.add('visible');
         overlay.firstElementChild.textContent = 'Druk op een pijltoets/WASD of gebruik touch-controls om te starten';
+        render();
+        scoreEl.textContent = '0';
+        speedEl.textContent = BASE_SPEED;
+        overlay.classList.add('visible');
+        overlay.firstElementChild.textContent = 'Druk op een pijltoets of WASD om te starten';
         clearInterval(loopTimer);
       }
 
       function setDirection(next) {
         if (next.x + direction.x === 0 && next.y + direction.y === 0) {
+        if (
+          next.x + direction.x === 0 &&
+          next.y + direction.y === 0
+        ) {
           return;
         }
         pendingDirection = next;
         if (!gameStarted) {
           startGameLoop();
         }
+      }
+
+      function speedForScore() {
+        return Math.min(BASE_SPEED + Math.floor(score / 4), MAX_SPEED);
       }
 
       function startGameLoop() {
@@ -308,6 +367,7 @@
         overlay.classList.remove('visible');
         clearInterval(loopTimer);
         loopTimer = setInterval(tick, 1000 / selectedSpeed);
+        loopTimer = setInterval(tick, 1000 / speedForScore());
       }
 
       function togglePause() {
@@ -317,6 +377,7 @@
           clearInterval(loopTimer);
           overlay.classList.add('visible');
           overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie of ⏯ om door te gaan)';
+          overlay.firstElementChild.textContent = 'Gepauzeerd (druk spatie om door te gaan)';
         } else {
           overlay.classList.remove('visible');
           startGameLoop();
@@ -358,6 +419,11 @@
             highScoreEl.textContent = String(highScore);
             localStorage.setItem('snake-high-score', String(highScore));
           }
+
+          const newSpeed = speedForScore();
+          speedEl.textContent = String(newSpeed);
+          clearInterval(loopTimer);
+          loopTimer = setInterval(tick, 1000 / newSpeed);
         } else {
           snake.pop();
         }
@@ -372,6 +438,10 @@
         ctx.fillRect(0, 0, board.width, board.height);
 
         ctx.strokeStyle = 'rgba(46, 106, 148, 0.16)';
+        ctx.fillStyle = '#102220';
+        ctx.fillRect(0, 0, board.width, board.height);
+
+        ctx.strokeStyle = 'rgba(236, 253, 243, 0.07)';
         ctx.lineWidth = 1;
         for (let i = 0; i <= TILE_COUNT; i += 1) {
           const p = i * tileSize;
@@ -386,6 +456,7 @@
         }
 
         ctx.fillStyle = '#ff6b81';
+        ctx.fillStyle = '#ef4444';
         ctx.beginPath();
         ctx.roundRect(
           food.x * tileSize + 3,
@@ -398,6 +469,7 @@
 
         snake.forEach((part, index) => {
           ctx.fillStyle = index === 0 ? '#2f7fc0' : '#5caee8';
+          ctx.fillStyle = index === 0 ? '#6de2af' : '#2dc986';
           ctx.beginPath();
           ctx.roundRect(
             part.x * tileSize + 2,
@@ -469,6 +541,7 @@
       window.addEventListener('resize', updateBoardSize);
 
       updateBoardSize();
+
       resetGame();
     </script>
   </body>
