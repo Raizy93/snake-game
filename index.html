@@ -20,6 +20,8 @@
         display: grid;
         place-items: center;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(circle at top, #c9e9ff, #eaf6ff 65%);
+        color: #11324a;
         background: radial-gradient(circle at top, #1f3a37, #0c1413 65%);
         color: #ecfdf3;
         padding: max(0.9rem, env(safe-area-inset-top))
@@ -31,6 +33,9 @@
       .game-shell {
         width: min(94vw, 560px);
         padding: 1rem;
+        border-radius: 16px;
+        background: rgba(235, 247, 255, 0.9);
+        border: 1px solid rgba(90, 153, 201, 0.35);
       }
 
       .game-shell {
@@ -66,6 +71,8 @@
       .pill {
         padding: 0.45rem 0.7rem;
         border-radius: 999px;
+        border: 1px solid rgba(90, 153, 201, 0.42);
+        background: rgba(90, 153, 201, 0.16);
         border: 1px solid rgba(109, 226, 175, 0.34);
         background: rgba(109, 226, 175, 0.12);
         font-size: 0.95rem;
@@ -73,6 +80,11 @@
 
       button,
       select {
+        border: none;
+        padding: 0.55rem 0.95rem;
+        border-radius: 10px;
+        background: #7ec8ff;
+        color: #10324b;
       button {
         border: none;
         padding: 0.55rem 0.95rem;
@@ -84,6 +96,9 @@
       }
 
       select {
+        background: rgba(235, 247, 255, 0.9);
+        color: #11324a;
+        border: 1px solid rgba(90, 153, 201, 0.7);
         background: rgba(7, 16, 14, 0.85);
         color: #ecfdf3;
         border: 1px solid rgba(109, 226, 175, 0.6);
@@ -105,6 +120,8 @@
         aspect-ratio: 1;
         display: block;
         margin: 0 auto;
+        background: #dff1ff;
+        border: 3px solid #5a99c9;
         background: #102220;
         border: 3px solid #2f6b54;
         border-radius: 12px;
@@ -115,6 +132,7 @@
         margin-top: 0.9rem;
         text-align: center;
         font-size: 0.92rem;
+        color: #4e7694;
         color: #b8d8c8;
       }
 
@@ -124,6 +142,7 @@
         display: none;
         place-items: center;
         border-radius: 12px;
+        background: rgba(74, 121, 159, 0.22);
         background: rgba(0, 0, 0, 0.46);
         text-align: center;
         padding: 1rem;
@@ -196,6 +215,11 @@
           <label class="pill" for="speed-select"
             >Snelheid:
             <select id="speed-select" aria-label="Kies snelheid in fps">
+              <option value="5">5 fps</option>
+              <option value="8" selected>8 fps</option>
+              <option value="10">10 fps</option>
+            </select>
+          </label>
               <option value="10">10 fps</option>
               <option value="30">30 fps</option>
               <option value="60">60 fps</option>
@@ -234,6 +258,7 @@
 
     <script>
       const TILE_COUNT = 20;
+      const SPEED_OPTIONS = [5, 8, 10];
       const SPEED_OPTIONS = [10, 30, 60];
       const BASE_SPEED = 8;
       const MAX_SPEED = 16;
@@ -409,6 +434,10 @@
       function render() {
         const tileSize = board.width / TILE_COUNT;
 
+        ctx.fillStyle = '#dff1ff';
+        ctx.fillRect(0, 0, board.width, board.height);
+
+        ctx.strokeStyle = 'rgba(46, 106, 148, 0.16)';
         ctx.fillStyle = '#102220';
         ctx.fillRect(0, 0, board.width, board.height);
 
@@ -426,6 +455,7 @@
           ctx.stroke();
         }
 
+        ctx.fillStyle = '#ff6b81';
         ctx.fillStyle = '#ef4444';
         ctx.beginPath();
         ctx.roundRect(
@@ -438,6 +468,7 @@
         ctx.fill();
 
         snake.forEach((part, index) => {
+          ctx.fillStyle = index === 0 ? '#2f7fc0' : '#5caee8';
           ctx.fillStyle = index === 0 ? '#6de2af' : '#2dc986';
           ctx.beginPath();
           ctx.roundRect(
