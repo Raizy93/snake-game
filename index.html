@@ -1,1 +1,1266 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeesterDanny werkblad-generator - schaal</title>
+  <style>
+    #md-schaaltool-x91824{
+      font-family:Arial,Helvetica,sans-serif;
+      color:#1f2d24;
+      background:#ffffff;
+      border:1px solid #d9e6dd;
+      border-radius:12px;
+      padding:12px;
+      box-sizing:border-box;
+      width:100%;
+      max-width:1100px;
+      margin:0 auto;
+      position:relative;
+    }
+    #md-schaaltool-x91824 *{box-sizing:border-box;}
 
+    #md-schaaltool-x91824 .md-top{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    #md-schaaltool-x91824 .md-title{
+      margin:0;
+      font-size:22px;
+      color:#256f47;
+      line-height:1.1;
+    }
+    #md-schaaltool-x91824 .md-sub{
+      margin:3px 0 0 0;
+      color:#5d6d63;
+      font-size:12px;
+    }
+    #md-schaaltool-x91824 .md-badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eaf7ef;
+      color:#256f47;
+      border:1px solid #cde6d4;
+      font-weight:700;
+      font-size:12px;
+    }
+
+    #md-schaaltool-x91824 .md-panel,
+    #md-schaaltool-x91824 .md-page{
+      background:#fff;
+      border:1px solid #d9e6dd;
+      border-radius:10px;
+      padding:12px;
+      margin-bottom:10px;
+    }
+
+    #md-schaaltool-x91824 .md-panel h3{
+      margin:0 0 10px 0;
+      font-size:16px;
+      color:#256f47;
+    }
+
+    #md-schaaltool-x91824 .md-grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:10px;
+    }
+    #md-schaaltool-x91824 .md-field{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    #md-schaaltool-x91824 .md-field label{
+      font-size:12px;
+      font-weight:700;
+    }
+    #md-schaaltool-x91824 .md-field input,
+    #md-schaaltool-x91824 .md-field select{
+      width:100%;
+      border:1px solid #cfded4;
+      border-radius:8px;
+      padding:8px 10px;
+      font-size:13px;
+      background:#fff;
+      color:#1f2d24;
+    }
+
+    #md-schaaltool-x91824 .md-c2{grid-column:span 2;}
+    #md-schaaltool-x91824 .md-c3{grid-column:span 3;}
+    #md-schaaltool-x91824 .md-c4{grid-column:span 4;}
+    #md-schaaltool-x91824 .md-c6{grid-column:span 6;}
+    #md-schaaltool-x91824 .md-c12{grid-column:span 12;}
+
+    #md-schaaltool-x91824 .md-section-box{
+      border:1px solid #e1ece4;
+      border-radius:10px;
+      padding:10px;
+      background:#fcfefd;
+    }
+    #md-schaaltool-x91824 .md-section-box-title{
+      font-size:13px;
+      font-weight:700;
+      color:#256f47;
+      margin:0 0 8px 0;
+    }
+
+    #md-schaaltool-x91824 .md-choice-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    #md-schaaltool-x91824 .md-check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid #d9e6dd;
+      border-radius:10px;
+      padding:10px 12px;
+      background:#f8fcf9;
+      min-height:58px;
+      font-size:12px;
+      font-weight:700;
+    }
+    #md-schaaltool-x91824 .md-check input{
+      flex:0 0 auto;
+    }
+
+    #md-schaaltool-x91824 .md-help{
+      color:#5d6d63;
+      font-size:11px;
+      line-height:1.35;
+    }
+
+    #md-schaaltool-x91824 .md-livebox{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+      border:1px solid #d9e6dd;
+      border-radius:10px;
+      padding:10px 12px;
+      background:#fbfefc;
+      margin-top:10px;
+    }
+    #md-schaaltool-x91824 .md-live-pill{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      border:1px solid #d9e6dd;
+      background:#eef8f1;
+      color:#256f47;
+    }
+    #md-schaaltool-x91824 .md-live-pill.bad{
+      background:#fff1f1;
+      color:#a33636;
+      border-color:#efcaca;
+    }
+    #md-schaaltool-x91824 .md-live-text{
+      font-size:12px;
+      color:#5d6d63;
+    }
+
+    #md-schaaltool-x91824 .md-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    #md-schaaltool-x91824 .md-btn{
+      border:0;
+      border-radius:8px;
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    #md-schaaltool-x91824 .md-btn-primary{background:#2f8f5b;color:#fff;}
+    #md-schaaltool-x91824 .md-btn-secondary{background:#edf7f0;color:#256f47;border:1px solid #cfe5d6;}
+    #md-schaaltool-x91824 .md-btn-plain{background:#fff;color:#1f2d24;border:1px solid #d9e6dd;}
+
+    #md-schaaltool-x91824 .md-status{
+      margin-top:8px;
+      font-size:12px;
+      color:#5d6d63;
+    }
+    #md-schaaltool-x91824 .md-error{
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:8px;
+      background:#fff3f3;
+      border:1px solid #efcaca;
+      color:#9a2f2f;
+      font-size:12px;
+      display:none;
+      white-space:pre-wrap;
+    }
+    #md-schaaltool-x91824 .md-empty{
+      border:2px dashed #cfe1d4;
+      border-radius:10px;
+      padding:16px;
+      text-align:center;
+      color:#5d6d63;
+      background:#fbfefc;
+      font-size:13px;
+    }
+
+    #md-schaaltool-x91824 .md-page-head{
+      display:flex;
+      justify-content:flex-start;
+      align-items:flex-start;
+      gap:10px;
+      border-bottom:1px solid #dfe9e2;
+      padding-bottom:6px;
+      margin-bottom:8px;
+    }
+    #md-schaaltool-x91824 .md-page-title{
+      margin:0;
+      font-size:17px;
+      color:#256f47;
+      line-height:1.1;
+    }
+
+    #md-schaaltool-x91824 .md-info{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    #md-schaaltool-x91824 .md-info-left{
+      display:flex;
+      gap:8px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+    #md-schaaltool-x91824 .md-info-box{
+      border:1px solid #d9e6dd;
+      background:#fbfefc;
+      border-radius:8px;
+      padding:6px 8px;
+      min-height:38px;
+    }
+    #md-schaaltool-x91824 .md-info-box.md-name{
+      width:220px;
+      max-width:100%;
+    }
+    #md-schaaltool-x91824 .md-info-box.md-date{
+      width:150px;
+      max-width:100%;
+    }
+    #md-schaaltool-x91824 .md-info-label{
+      display:block;
+      font-size:10px;
+      color:#5d6d63;
+      margin-bottom:2px;
+    }
+    #md-schaaltool-x91824 .md-line{
+      border-bottom:1px solid #ceddd1;
+      height:12px;
+      width:100%;
+    }
+
+    #md-schaaltool-x91824 .md-logo-box{
+      width:110px;
+      min-height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2px 4px;
+    }
+    #md-schaaltool-x91824 .md-logo-box img{
+      max-width:100%;
+      max-height:42px;
+      display:block;
+      opacity:0.38;
+      object-fit:contain;
+    }
+
+    #md-schaaltool-x91824 .md-section{
+      margin-bottom:8px;
+      border:1px solid #e3eee7;
+      border-radius:8px;
+      overflow:hidden;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    #md-schaaltool-x91824 .md-section-head{
+      background:#eef8f1;
+      color:#256f47;
+      padding:7px 9px;
+      font-size:14px;
+      font-weight:700;
+      border-bottom:1px solid #dcebe0;
+      line-height:1.2;
+    }
+    #md-schaaltool-x91824 .md-section-sub{
+      font-size:10px;
+      color:#5d6d63;
+      font-weight:400;
+      margin-top:2px;
+    }
+    #md-schaaltool-x91824 .md-section-body{
+      padding:8px 9px;
+    }
+
+    #md-schaaltool-x91824 .md-two-cols{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0 22px;
+    }
+    #md-schaaltool-x91824 .md-col{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    #md-schaaltool-x91824 .md-item{
+      font-size:12px;
+      line-height:1.35;
+      padding:2px 0;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    #md-schaaltool-x91824 .md-item strong{
+      font-weight:700;
+    }
+
+    #md-schaaltool-x91824 .md-scale-line{
+      font-weight:700;
+      margin-bottom:2px;
+    }
+
+    #md-schaaltool-x91824 .md-blank{
+      display:inline-block;
+      min-width:72px;
+      border-bottom:1px solid #8ea89a;
+      height:11px;
+      vertical-align:middle;
+      margin:0 2px;
+    }
+
+    #md-schaaltool-x91824 .md-context-item{
+      font-size:12px;
+      line-height:1.26;
+      margin-bottom:4px;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    #md-schaaltool-x91824 .md-context-item:last-child{
+      margin-bottom:0;
+    }
+
+    #md-schaaltool-x91824 .md-answer-line{
+      margin-top:1px;
+    }
+
+    #md-schaaltool-x91824 .md-hidden{
+      display:none !important;
+    }
+
+    #md-schaaltool-x91824 .md-foot{
+      margin-top:3px;
+      padding-top:3px;
+      border-top:1px solid #e5eee8;
+      font-size:9px;
+      line-height:1.1;
+      color:#5d6d63;
+      text-align:center;
+    }
+
+    #md-schaaltool-x91824 .md-measure-wrap{
+      position:absolute;
+      left:-99999px;
+      top:0;
+      width:794px;
+      visibility:hidden;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    #md-schaaltool-x91824 .md-measure-wrap .md-page{
+      width:794px;
+      box-sizing:border-box;
+    }
+
+    @media (max-width:900px){
+      #md-schaaltool-x91824 .md-c2,
+      #md-schaaltool-x91824 .md-c3,
+      #md-schaaltool-x91824 .md-c4,
+      #md-schaaltool-x91824 .md-c6{grid-column:span 6;}
+      #md-schaaltool-x91824 .md-two-cols{grid-template-columns:1fr;}
+      #md-schaaltool-x91824 .md-info{align-items:flex-start;}
+      #md-schaaltool-x91824 .md-choice-grid{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:640px){
+      #md-schaaltool-x91824{padding:8px;}
+      #md-schaaltool-x91824 .md-c2,
+      #md-schaaltool-x91824 .md-c3,
+      #md-schaaltool-x91824 .md-c4,
+      #md-schaaltool-x91824 .md-c6,
+      #md-schaaltool-x91824 .md-c12{grid-column:span 12;}
+      #md-schaaltool-x91824 .md-page-head{flex-direction:column;}
+      #md-schaaltool-x91824 .md-title{font-size:19px;}
+      #md-schaaltool-x91824 .md-info{flex-direction:column;}
+      #md-schaaltool-x91824 .md-info-left{width:100%;}
+      #md-schaaltool-x91824 .md-info-box.md-name,
+      #md-schaaltool-x91824 .md-info-box.md-date{width:100%;}
+      #md-schaaltool-x91824 .md-logo-box{width:100%;justify-content:flex-start;}
+    }
+
+    @media print{
+      @page{
+        size:A4 portrait;
+        margin:7mm;
+      }
+
+      #md-schaaltool-x91824 .md-panel,
+      #md-schaaltool-x91824 .md-actions,
+      #md-schaaltool-x91824 .md-status,
+      #md-schaaltool-x91824 .md-error,
+      #md-schaaltool-x91824 .md-top{
+        display:none !important;
+      }
+
+      #md-schaaltool-x91824{
+        border:0 !important;
+        background:#fff !important;
+        padding:0 !important;
+        margin:0 !important;
+        max-width:none !important;
+      }
+
+      #md-schaaltool-x91824 .md-page{
+        border:0 !important;
+        border-radius:0 !important;
+        padding:0 !important;
+        margin:0 !important;
+        page-break-after:always;
+      }
+
+      #md-schaaltool-x91824 .md-page:last-child{
+        page-break-after:auto;
+      }
+
+      #md-schaaltool-x91824 .md-two-cols{
+        grid-template-columns:1fr 1fr !important;
+      }
+
+      #md-schaaltool-x91824 .md-logo-box img{
+        opacity:0.35 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="md-schaaltool-x91824">
+    <div class="md-top">
+      <div>
+        <h2 class="md-title">MeesterDanny werkblad-generator</h2>
+        <p class="md-sub">Rekenen met schaal • groep 7/8 • compacte weergave</p>
+      </div>
+      <div class="md-badge">X cm op de tekening is … cm / m in het echt</div>
+    </div>
+
+    <div class="md-panel">
+      <h3>Instellingen</h3>
+
+      <div class="md-grid">
+        <div class="md-c12">
+          <div class="md-section-box">
+            <div class="md-section-box-title">1. Kies welke onderdelen je wilt opnemen</div>
+            <div class="md-choice-grid">
+              <label class="md-check"><input id="mdInc1_x91824" type="checkbox" checked> Reken uit in centimeters</label>
+              <label class="md-check"><input id="mdInc2_x91824" type="checkbox" checked> Reken uit in meters</label>
+              <label class="md-check"><input id="mdInc3_x91824" type="checkbox" checked> Contextopgaven / verhaalsommen</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="md-c12">
+          <div class="md-section-box">
+            <div class="md-section-box-title">2. Kies het aantal opgaven per onderdeel</div>
+            <div class="md-grid">
+              <div class="md-field md-c4">
+                <label for="mdCount1_x91824">Aantal sommen cm</label>
+                <input id="mdCount1_x91824" type="number" min="0" max="30" value="6">
+              </div>
+
+              <div class="md-field md-c4">
+                <label for="mdCount2_x91824">Aantal sommen m</label>
+                <input id="mdCount2_x91824" type="number" min="0" max="30" value="6">
+              </div>
+
+              <div class="md-field md-c4">
+                <label for="mdCount3_x91824">Aantal contextopgaven</label>
+                <input id="mdCount3_x91824" type="number" min="0" max="16" value="3">
+              </div>
+            </div>
+            <div class="md-help" style="margin-top:8px;">Je kunt per gekozen onderdeel het aantal opgaven instellen. De tool controleert daarna automatisch of het leerlingblad nog op 1 A4 past.</div>
+          </div>
+        </div>
+
+        <div class="md-c12">
+          <div class="md-section-box">
+            <div class="md-section-box-title">3. Overige instellingen</div>
+            <div class="md-grid">
+              <div class="md-field md-c3">
+                <label for="mdMinCm_x91824">Minimum cm tekening</label>
+                <input id="mdMinCm_x91824" type="number" min="1" step="0.5" value="2">
+              </div>
+
+              <div class="md-field md-c3">
+                <label for="mdMaxCm_x91824">Maximum cm tekening</label>
+                <input id="mdMaxCm_x91824" type="number" min="1" step="0.5" value="12">
+              </div>
+
+              <div class="md-field md-c6">
+                <label for="mdMeterMode_x91824">Antwoorden in meters</label>
+                <select id="mdMeterMode_x91824">
+                  <option value="pretty">Alleen helen en halven</option>
+                  <option value="decimal">Ook kommagetallen toestaan</option>
+                </select>
+              </div>
+
+              <div class="md-field md-c6">
+                <label for="mdScales_x91824">Toegestane schalen</label>
+                <input id="mdScales_x91824" type="text" value="10,20,25,50,100,200,250,500">
+                <div class="md-help">Bijvoorbeeld: 10,20,25,50,100,200,250,500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md-c12">
+          <div class="md-livebox">
+            <span class="md-live-pill" id="mdFitPill_x91824">Past goed op 1 A4</span>
+            <span class="md-live-text" id="mdFitText_x91824">De huidige keuze past naar verwachting op 1 A4 leerlingblad.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="md-actions">
+        <button class="md-btn md-btn-primary" id="mdGen_x91824" type="button">Genereer werkblad</button>
+        <button class="md-btn md-btn-secondary" id="mdNew_x91824" type="button">Nieuwe versie</button>
+        <button class="md-btn md-btn-plain" id="mdAns_x91824" type="button">Toon antwoordenblad</button>
+        <button class="md-btn md-btn-plain" id="mdPrint_x91824" type="button">Print / opslaan als PDF</button>
+      </div>
+
+      <div class="md-status" id="mdStatus_x91824">Nog geen werkblad gegenereerd.</div>
+      <div class="md-error" id="mdError_x91824"></div>
+    </div>
+
+    <div id="mdPages_x91824">
+      <div class="md-empty">Klik op <strong>Genereer werkblad</strong> om een werkblad te maken.</div>
+    </div>
+
+    <div id="mdMeasure_x91824" class="md-measure-wrap"></div>
+  </div>
+
+  <script>
+    (function(){
+      var root = document.getElementById('md-schaaltool-x91824');
+      if(!root){return;}
+
+      function get(id){
+        return document.getElementById(id);
+      }
+
+      var LOGO_URL = 'https://raizy93.github.io/Werkblad-generator-schaal/meesterdanny.png';
+
+      var elCount1 = get('mdCount1_x91824');
+      var elCount2 = get('mdCount2_x91824');
+      var elCount3 = get('mdCount3_x91824');
+      var elMin = get('mdMinCm_x91824');
+      var elMax = get('mdMaxCm_x91824');
+      var elScales = get('mdScales_x91824');
+      var elMeter = get('mdMeterMode_x91824');
+      var elInc1 = get('mdInc1_x91824');
+      var elInc2 = get('mdInc2_x91824');
+      var elInc3 = get('mdInc3_x91824');
+      var btnGen = get('mdGen_x91824');
+      var btnNew = get('mdNew_x91824');
+      var btnAns = get('mdAns_x91824');
+      var btnPrint = get('mdPrint_x91824');
+      var boxStatus = get('mdStatus_x91824');
+      var boxError = get('mdError_x91824');
+      var boxPages = get('mdPages_x91824');
+      var boxMeasure = get('mdMeasure_x91824');
+      var fitPill = get('mdFitPill_x91824');
+      var fitText = get('mdFitText_x91824');
+
+      var versionCounter = 0;
+      var answersVisible = false;
+      var currentData = null;
+
+      function showError(msg){
+        boxError.style.display = 'block';
+        boxError.innerHTML = msg;
+      }
+
+      function clearError(){
+        boxError.style.display = 'none';
+        boxError.innerHTML = '';
+      }
+
+      function esc(str){
+        return String(str)
+          .replace(/&/g,'&amp;')
+          .replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;')
+          .replace(/'/g,'&#039;');
+      }
+
+      function formatNl(num){
+        var n = Math.round(num * 100) / 100;
+        if(Math.abs(n - Math.round(n)) < 0.0000001){
+          return String(Math.round(n));
+        }
+        var s = n.toFixed(2);
+        s = s.replace(/\.00$/,'').replace(/(\.\d)0$/,'$1').replace('.',',');
+        return s;
+      }
+
+      function seedFromText(str){
+        var h = 2166136261;
+        var i;
+        for(i=0;i<str.length;i++){
+          h ^= str.charCodeAt(i);
+          h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+        }
+        return h >>> 0;
+      }
+
+      function makeRng(seedText){
+        var state = seedFromText(seedText);
+        return function(){
+          state = (state * 1664525 + 1013904223) % 4294967296;
+          return state / 4294967296;
+        };
+      }
+
+      function shuffle(arr, rng){
+        var a = arr.slice();
+        var i, j, t;
+        for(i=a.length-1;i>0;i--){
+          j = Math.floor(rng() * (i + 1));
+          t = a[i];
+          a[i] = a[j];
+          a[j] = t;
+        }
+        return a;
+      }
+
+      function parseScales(value){
+        var parts = value.split(',');
+        var out = [];
+        var seen = {};
+        var i, n;
+        for(i=0;i<parts.length;i++){
+          n = parseInt(String(parts[i]).replace(/\s+/g,''),10);
+          if(!isNaN(n) && n > 0 && !seen[n]){
+            out.push(n);
+            seen[n] = true;
+          }
+        }
+        return out;
+      }
+
+      function drawingValues(minV, maxV){
+        var vals = [];
+        var start = Math.round(minV * 2);
+        var end = Math.round(maxV * 2);
+        var i;
+        for(i=start;i<=end;i++){
+          vals.push(i / 2);
+        }
+        return vals;
+      }
+
+      function prettyMeter(m){
+        var rounded = Math.round(m * 100) / 100;
+        var tenth = Math.round(rounded * 10) / 10;
+        return Math.abs(rounded - Math.round(rounded)) < 0.0000001 || Math.abs(rounded - tenth) < 0.0000001;
+      }
+
+      function getSettings(){
+        return {
+          count1: parseInt(elCount1.value,10) || 0,
+          count2: parseInt(elCount2.value,10) || 0,
+          count3: parseInt(elCount3.value,10) || 0,
+          minCm: parseFloat(String(elMin.value).replace(',','.')) || 0,
+          maxCm: parseFloat(String(elMax.value).replace(',','.')) || 0,
+          scales: parseScales(elScales.value),
+          meterMode: elMeter.value,
+          inc1: elInc1.checked,
+          inc2: elInc2.checked,
+          inc3: elInc3.checked
+        };
+      }
+
+      function validate(s){
+        if(s.minCm <= 0 || s.maxCm <= 0){ return 'Minimum en maximum moeten groter zijn dan 0.'; }
+        if(s.minCm > s.maxCm){ return 'Het minimum mag niet groter zijn dan het maximum.'; }
+        if(!s.scales.length){ return 'Vul minstens één geldige schaal in.'; }
+        if(!s.inc1 && !s.inc2 && !s.inc3){ return 'Zet minstens één onderdeel aan.'; }
+        return '';
+      }
+
+      function clampCounts(s){
+        if(s.count1 < 0){ s.count1 = 0; }
+        if(s.count2 < 0){ s.count2 = 0; }
+        if(s.count3 < 0){ s.count3 = 0; }
+
+        if(s.count1 > 30){ s.count1 = 30; }
+        if(s.count2 > 30){ s.count2 = 30; }
+        if(s.count3 > 16){ s.count3 = 16; }
+
+        if(elCount3.value !== String(s.count3)){
+          elCount3.value = s.count3;
+        }
+
+        return s;
+      }
+
+      function getPrintablePageHeightPx(){
+        return 1008;
+      }
+
+      function buildTooLargeMessage(s){
+        var msg = 'Deze combinatie is te groot voor 1 A4 leerlingblad.\n';
+        msg += 'Kies minder opgaven of zet een onderdeel uit.\n\n';
+
+        if(s.inc1 && s.inc2 && s.inc3){
+          msg += 'Handige richtlijn bij alle drie onderdelen: ongeveer 6 cm-sommen, 6 m-sommen en 3 contextopgaven.';
+        } else if(s.inc1 && s.inc2 && !s.inc3){
+          msg += 'Handige richtlijn bij alleen centimeters + meters: ongeveer 10 tot 12 sommen per onderdeel.';
+        } else if(s.inc1 && !s.inc2 && !s.inc3){
+          msg += 'Bij alleen centimeters kun je meer kwijt, maar deze keuze is nu te groot.';
+        } else if(!s.inc1 && s.inc2 && !s.inc3){
+          msg += 'Bij alleen meters kun je meer kwijt, maar deze keuze is nu te groot.';
+        } else if(!s.inc1 && !s.inc2 && s.inc3){
+          msg += 'Bij alleen contextopgaven geldt een maximum van 16 opgaven. Daarboven past het niet netjes op 1 A4.';
+        } else {
+          msg += 'Probeer 1 of 2 opgaven minder per onderdeel.';
+        }
+
+        return msg;
+      }
+
+      function addUnique(list, item, used){
+        if(!used[item.key]){
+          used[item.key] = true;
+          list.push(item);
+        }
+      }
+
+      function makeSection1(rng, s, used){
+        var list = [];
+        var candidates = [];
+        var draws = drawingValues(s.minCm, s.maxCm);
+        var i, j, shuffled;
+
+        for(i=0;i<s.scales.length;i++){
+          for(j=0;j<draws.length;j++){
+            candidates.push({
+              scale:s.scales[i],
+              drawCm:draws[j],
+              answerCm:draws[j] * s.scales[i],
+              key:'s1|' + s.scales[i] + '|' + draws[j]
+            });
+          }
+        }
+
+        shuffled = shuffle(candidates, rng);
+        for(i=0;i<shuffled.length && list.length < s.count1;i++){
+          addUnique(list, shuffled[i], used);
+        }
+        return list;
+      }
+
+      function makeSection2(rng, s, used){
+        var list = [];
+        var candidates = [];
+        var draws = drawingValues(s.minCm, s.maxCm);
+        var i, j, meters, ok, shuffled;
+
+        for(i=0;i<s.scales.length;i++){
+          for(j=0;j<draws.length;j++){
+            meters = (draws[j] * s.scales[i]) / 100;
+            ok = s.meterMode === 'pretty' ? prettyMeter(meters) : true;
+            if(ok){
+              candidates.push({
+                scale:s.scales[i],
+                drawCm:draws[j],
+                answerM:Math.round(meters * 100) / 100,
+                key:'s2|' + s.scales[i] + '|' + draws[j]
+              });
+            }
+          }
+        }
+
+        shuffled = shuffle(candidates, rng);
+        for(i=0;i<shuffled.length && list.length < s.count2;i++){
+          addUnique(list, shuffled[i], used);
+        }
+        return list;
+      }
+
+function contextTemplates(){
+  return [
+    {name:'speeltuin', text:'Op een plattegrond van een speeltuin staat de schaal 1 : {S}. De glijbaan is {C} cm lang op de tekening. Hoe lang is de glijbaan in het echt?', unit:'m'},
+    {name:'huis', text:'Op een bouwtekening van een huis staat de schaal 1 : {S}. De woonkamer is {C} cm breed op de tekening. Hoe breed is de woonkamer in het echt?', unit:'m'},
+    {name:'schatkaart', text:'Op een schatkaart staat de schaal 1 : {S}. Het pad naar de schatkist is {C} cm lang op de kaart. Hoe lang is dat in het echt?', unit:'m'},
+    {name:'voetbalveld', text:'Op een tekening van een voetbalveld staat de schaal 1 : {S}. De zijlijn is {C} cm lang op de tekening. Hoe lang is de zijlijn in het echt?', unit:'m'},
+    {name:'dierentuin', text:'Op een plattegrond van een dierentuin staat de schaal 1 : {S}. Het olifantenverblijf is {C} cm lang op de tekening. Hoe lang is dat in het echt?', unit:'m'},
+    {name:'schoolplein', text:'Op een plattegrond van een schoolplein staat de schaal 1 : {S}. De zandbak is {C} cm lang op de tekening. Hoe lang is de zandbak in het echt?', unit:'cm'},
+    {name:'camping', text:'Op een plattegrond van een camping staat de schaal 1 : {S}. Het zwembad is {C} cm lang op de tekening. Hoe lang is het zwembad in het echt?', unit:'m'},
+    {name:'slaapkamer', text:'Op een bouwtekening van een slaapkamer staat de schaal 1 : {S}. Het bed is {C} cm lang op de tekening. Hoe lang is het bed in het echt?', unit:'cm'},
+    {name:'park', text:'Op een plattegrond van een park staat de schaal 1 : {S}. De vijver is {C} cm breed op de tekening. Hoe breed is de vijver in het echt?', unit:'m'},
+    {name:'speeltuin-kaart', text:'Op een kaart van een speeltuin staat de schaal 1 : {S}. Het klimrek is {C} cm hoog op de tekening. Hoe hoog is het klimrek in het echt?', unit:'cm'},
+    {name:'museum', text:'Op een plattegrond van een museum staat de schaal 1 : {S}. De grote zaal is {C} cm lang op de tekening. Hoe lang is de zaal in het echt?', unit:'m'},
+    {name:'bibliotheek', text:'Op een plattegrond van een bibliotheek staat de schaal 1 : {S}. De leestafel is {C} cm lang op de tekening. Hoe lang is de leestafel in het echt?', unit:'cm'},
+    {name:'station', text:'Op een plattegrond van een station staat de schaal 1 : {S}. Perron 1 is {C} cm lang op de tekening. Hoe lang is het perron in het echt?', unit:'m'},
+    {name:'supermarkt', text:'Op een plattegrond van een supermarkt staat de schaal 1 : {S}. Het groentepad is {C} cm lang op de tekening. Hoe lang is dat in het echt?', unit:'m'},
+    {name:'ziekenhuis', text:'Op een plattegrond van een ziekenhuis staat de schaal 1 : {S}. De gang naar de spoedafdeling is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
+    {name:'boerderij', text:'Op een plattegrond van een boerderij staat de schaal 1 : {S}. De stal is {C} cm breed op de tekening. Hoe breed is de stal in het echt?', unit:'m'},
+    {name:'manege', text:'Op een plattegrond van een manege staat de schaal 1 : {S}. De rijbak is {C} cm lang op de tekening. Hoe lang is de rijbak in het echt?', unit:'m'},
+    {name:'zwembadgebouw', text:'Op een plattegrond van een zwembadgebouw staat de schaal 1 : {S}. Het wedstrijdbad is {C} cm lang op de tekening. Hoe lang is het bad in het echt?', unit:'m'},
+    {name:'sporthal', text:'Op een plattegrond van een sporthal staat de schaal 1 : {S}. Het basketbalveld is {C} cm breed op de tekening. Hoe breed is het veld in het echt?', unit:'m'},
+    {name:'ijsbaan', text:'Op een plattegrond van een ijsbaan staat de schaal 1 : {S}. De baan is {C} cm lang op de tekening. Hoe lang is de baan in het echt?', unit:'m'},
+
+    {name:'kantoor', text:'Op een bouwtekening van een kantoor staat de schaal 1 : {S}. De vergaderruimte is {C} cm breed op de tekening. Hoe breed is die ruimte in het echt?', unit:'m'},
+    {name:'keuken', text:'Op een bouwtekening van een keuken staat de schaal 1 : {S}. Het aanrecht is {C} cm lang op de tekening. Hoe lang is het aanrecht in het echt?', unit:'cm'},
+    {name:'badkamer', text:'Op een bouwtekening van een badkamer staat de schaal 1 : {S}. Het ligbad is {C} cm lang op de tekening. Hoe lang is het bad in het echt?', unit:'cm'},
+    {name:'woonkamer-raam', text:'Op een bouwtekening van een woonkamer staat de schaal 1 : {S}. Het raam is {C} cm breed op de tekening. Hoe breed is het raam in het echt?', unit:'cm'},
+    {name:'garage', text:'Op een bouwtekening van een garage staat de schaal 1 : {S}. De garagepoort is {C} cm breed op de tekening. Hoe breed is de poort in het echt?', unit:'cm'},
+    {name:'tuin', text:'Op een tuinontwerp staat de schaal 1 : {S}. Het grasveld is {C} cm lang op de tekening. Hoe lang is het grasveld in het echt?', unit:'m'},
+    {name:'schuur', text:'Op een bouwtekening van een schuur staat de schaal 1 : {S}. De schuur is {C} cm breed op de tekening. Hoe breed is de schuur in het echt?', unit:'m'},
+    {name:'kas', text:'Op een bouwtekening van een kas staat de schaal 1 : {S}. De kas is {C} cm lang op de tekening. Hoe lang is de kas in het echt?', unit:'m'},
+    {name:'klaslokaal', text:'Op een bouwtekening van een klaslokaal staat de schaal 1 : {S}. Het digibord is {C} cm breed op de tekening. Hoe breed is het digibord in het echt?', unit:'cm'},
+    {name:'gymzaal', text:'Op een bouwtekening van een gymzaal staat de schaal 1 : {S}. De gymzaal is {C} cm lang op de tekening. Hoe lang is de gymzaal in het echt?', unit:'m'},
+
+    {name:'schoolgebouw', text:'Op een plattegrond van een schoolgebouw staat de schaal 1 : {S}. De gang naar de lokalen is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
+    {name:'schoolbibliotheek', text:'Op een plattegrond van een schoolbibliotheek staat de schaal 1 : {S}. De boekenkast is {C} cm lang op de tekening. Hoe lang is de boekenkast in het echt?', unit:'cm'},
+    {name:'kantine', text:'Op een plattegrond van een kantine staat de schaal 1 : {S}. De uitgiftebalie is {C} cm breed op de tekening. Hoe breed is de balie in het echt?', unit:'cm'},
+    {name:'speelzaal', text:'Op een plattegrond van een speelzaal staat de schaal 1 : {S}. De mat is {C} cm lang op de tekening. Hoe lang is de mat in het echt?', unit:'cm'},
+    {name:'aula', text:'Op een plattegrond van een aula staat de schaal 1 : {S}. Het podium is {C} cm breed op de tekening. Hoe breed is het podium in het echt?', unit:'m'},
+    {name:'fietsenstalling', text:'Op een plattegrond van een fietsenstalling staat de schaal 1 : {S}. De rij fietsenrekken is {C} cm lang op de tekening. Hoe lang is die rij in het echt?', unit:'m'},
+    {name:'schoolroute', text:'Op een plattegrond van een school staat de schaal 1 : {S}. De route van het lokaal naar de uitgang is {C} cm lang op de tekening. Hoe lang is die route in het echt?', unit:'m'},
+    {name:'schooltuin', text:'Op een plattegrond van een schooltuin staat de schaal 1 : {S}. De moestuinbak is {C} cm breed op de tekening. Hoe breed is de bak in het echt?', unit:'cm'},
+    {name:'muzieklokaal', text:'Op een bouwtekening van een muzieklokaal staat de schaal 1 : {S}. De piano is {C} cm lang op de tekening. Hoe lang is de piano in het echt?', unit:'cm'},
+    {name:'technieklokaal', text:'Op een bouwtekening van een technieklokaal staat de schaal 1 : {S}. De werkbank is {C} cm lang op de tekening. Hoe lang is de werkbank in het echt?', unit:'cm'},
+
+    {name:'dierenasiel', text:'Op een plattegrond van een dierenasiel staat de schaal 1 : {S}. Het hondenverblijf is {C} cm lang op de tekening. Hoe lang is dat verblijf in het echt?', unit:'m'},
+    {name:'aquarium', text:'Op een plattegrond van een aquarium staat de schaal 1 : {S}. Het haaienbassin is {C} cm breed op de tekening. Hoe breed is dat bassin in het echt?', unit:'m'},
+    {name:'safaripark', text:'Op een plattegrond van een safaripark staat de schaal 1 : {S}. De route langs de giraffen is {C} cm lang op de tekening. Hoe lang is die route in het echt?', unit:'m'},
+    {name:'dolfijnenshow', text:'Op een plattegrond van een dolfinarium staat de schaal 1 : {S}. Het bassin voor de show is {C} cm lang op de tekening. Hoe lang is het bassin in het echt?', unit:'m'},
+    {name:'vlindertuin', text:'Op een plattegrond van een vlindertuin staat de schaal 1 : {S}. Het pad door de tuin is {C} cm lang op de tekening. Hoe lang is dat pad in het echt?', unit:'m'},
+    {name:'hotel', text:'Op een bouwtekening van een hotel staat de schaal 1 : {S}. De hotellobby is {C} cm breed op de tekening. Hoe breed is de lobby in het echt?', unit:'m'},
+    {name:'restaurant', text:'Op een bouwtekening van een restaurant staat de schaal 1 : {S}. De bar is {C} cm lang op de tekening. Hoe lang is de bar in het echt?', unit:'cm'},
+    {name:'bioscoop', text:'Op een plattegrond van een bioscoop staat de schaal 1 : {S}. De zaal is {C} cm breed op de tekening. Hoe breed is de zaal in het echt?', unit:'m'},
+    {name:'theater', text:'Op een plattegrond van een theater staat de schaal 1 : {S}. Het toneel is {C} cm breed op de tekening. Hoe breed is het toneel in het echt?', unit:'m'},
+    {name:'concertzaal', text:'Op een plattegrond van een concertzaal staat de schaal 1 : {S}. Het podium is {C} cm diep op de tekening. Hoe diep is het podium in het echt?', unit:'m'},
+
+    {name:'haventerrein', text:'Op een plattegrond van een haventerrein staat de schaal 1 : {S}. De kade is {C} cm lang op de tekening. Hoe lang is de kade in het echt?', unit:'m'},
+    {name:'jachthaven', text:'Op een plattegrond van een jachthaven staat de schaal 1 : {S}. De steiger is {C} cm lang op de tekening. Hoe lang is de steiger in het echt?', unit:'m'},
+    {name:'vliegveld', text:'Op een plattegrond van een vliegveld staat de schaal 1 : {S}. De wachtruimte is {C} cm breed op de tekening. Hoe breed is de wachtruimte in het echt?', unit:'m'},
+    {name:'campus', text:'Op een plattegrond van een campus staat de schaal 1 : {S}. Het plein tussen de gebouwen is {C} cm breed op de tekening. Hoe breed is dat plein in het echt?', unit:'m'},
+    {name:'winkelcentrum', text:'Op een plattegrond van een winkelcentrum staat de schaal 1 : {S}. De hoofdgang is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
+    {name:'marktplein', text:'Op een plattegrond van een marktplein staat de schaal 1 : {S}. De rij kramen is {C} cm lang op de tekening. Hoe lang is die rij in het echt?', unit:'m'},
+    {name:'brandweerkazerne', text:'Op een bouwtekening van een brandweerkazerne staat de schaal 1 : {S}. De garage voor de brandweerwagens is {C} cm breed op de tekening. Hoe breed is die garage in het echt?', unit:'m'},
+    {name:'politiebureau', text:'Op een plattegrond van een politiebureau staat de schaal 1 : {S}. De baliehal is {C} cm breed op de tekening. Hoe breed is de hal in het echt?', unit:'m'},
+    {name:'postkantoor', text:'Op een bouwtekening van een postkantoor staat de schaal 1 : {S}. De pakketbalie is {C} cm lang op de tekening. Hoe lang is de balie in het echt?', unit:'cm'},
+    {name:'bakkerij', text:'Op een bouwtekening van een bakkerij staat de schaal 1 : {S}. De ovenwand is {C} cm breed op de tekening. Hoe breed is die wand in het echt?', unit:'cm'}
+  ];
+}
+
+      function makeSection3(rng, s, used){
+        var list = [];
+        var temp = contextTemplates();
+        var draws = drawingValues(s.minCm, s.maxCm);
+        var candidates = [];
+        var i, j, k, meters, answer, ok, shuffled;
+
+        for(i=0;i<temp.length;i++){
+          for(j=0;j<s.scales.length;j++){
+            for(k=0;k<draws.length;k++){
+              meters = (draws[k] * s.scales[j]) / 100;
+              answer = temp[i].unit === 'm' ? meters : draws[k] * s.scales[j];
+              ok = temp[i].unit === 'm' ? (s.meterMode === 'pretty' ? prettyMeter(meters) : true) : true;
+              if(ok){
+                candidates.push({
+                  text:temp[i].text,
+                  unit:temp[i].unit,
+                  scale:s.scales[j],
+                  drawCm:draws[k],
+                  answer:Math.round(answer * 100) / 100,
+                  key:'s3|' + temp[i].name + '|' + s.scales[j] + '|' + draws[k] + '|' + temp[i].unit
+                });
+              }
+            }
+          }
+        }
+
+        shuffled = shuffle(candidates, rng);
+        for(i=0;i<shuffled.length && list.length < s.count3;i++){
+          addUnique(list, shuffled[i], used);
+        }
+        return list;
+      }
+
+      function buildData(settings, versionSeed){
+        var rng = makeRng(versionSeed);
+        var used = {};
+        return {
+          settings: settings,
+          s1: settings.inc1 ? makeSection1(rng, settings, used) : [],
+          s2: settings.inc2 ? makeSection2(rng, settings, used) : [],
+          s3: settings.inc3 ? makeSection3(rng, settings, used) : []
+        };
+      }
+
+      function fillTemplate(txt, scale, drawCm){
+        return txt.replace('{S}', scale).replace('{C}', formatNl(drawCm));
+      }
+
+      function getVisibleSections(data){
+        var sections = [];
+        if(data.s1.length){
+          sections.push({
+            type:'cm',
+            title:'Reken uit',
+            subtitle:'Antwoorden in centimeters',
+            items:data.s1
+          });
+        }
+        if(data.s2.length){
+          sections.push({
+            type:'m',
+            title:'Reken uit en reken om',
+            subtitle:'Antwoorden in meters',
+            items:data.s2
+          });
+        }
+        if(data.s3.length){
+          sections.push({
+            type:'context',
+            title:'Schaal in context',
+            subtitle:'Verhaalsommen',
+            items:data.s3
+          });
+        }
+        return sections;
+      }
+
+      function splitIntoColumns(list){
+        var left = [];
+        var right = [];
+        var half = Math.ceil(list.length / 2);
+        var i;
+        for(i = 0; i < list.length; i++){
+          if(i < half){
+            left.push({ index: i + 1, item: list[i] });
+          } else {
+            right.push({ index: i + 1, item: list[i] });
+          }
+        }
+        return { left:left, right:right };
+      }
+
+      function renderStandardItem(entry, answers, unitKey){
+        var item = entry.item;
+        var h = '';
+        h += '<div class="md-item">';
+        h += '<div class="md-scale-line">' + entry.index + '. Schaal 1 : ' + esc(item.scale) + '</div>';
+        h += '<div>' + formatNl(item.drawCm) + ' cm op de tekening = ';
+        if(answers){
+          if(unitKey === 'cm'){
+            h += '<strong>' + formatNl(item.answerCm) + ' cm</strong>';
+          } else {
+            h += '<strong>' + formatNl(item.answerM) + ' m</strong>';
+          }
+        } else {
+          h += '<span class="md-blank"></span> ' + unitKey;
+        }
+        h += ' in het echt</div>';
+        h += '</div>';
+        return h;
+      }
+
+      function renderStandardSection(sectionNumber, title, subtitle, list, answers, unitKey){
+        var h = '';
+        var cols = splitIntoColumns(list);
+        var i;
+
+        h += '<section class="md-section">';
+        h += '<div class="md-section-head">Opgave ' + sectionNumber + ' · ' + title + '<div class="md-section-sub">' + subtitle + '</div></div>';
+        h += '<div class="md-section-body">';
+        h += '<div class="md-two-cols">';
+        h += '<div class="md-col">';
+        for(i = 0; i < cols.left.length; i++){
+          h += renderStandardItem(cols.left[i], answers, unitKey);
+        }
+        h += '</div>';
+        h += '<div class="md-col">';
+        for(i = 0; i < cols.right.length; i++){
+          h += renderStandardItem(cols.right[i], answers, unitKey);
+        }
+        h += '</div>';
+        h += '</div>';
+        h += '</div></section>';
+        return h;
+      }
+
+      function renderContextSection(sectionNumber, title, subtitle, list, answers){
+        var h = '';
+        var i, item, txt;
+        h += '<section class="md-section">';
+        h += '<div class="md-section-head">Opgave ' + sectionNumber + ' · ' + title + '<div class="md-section-sub">' + subtitle + '</div></div>';
+        h += '<div class="md-section-body">';
+
+        for(i=0;i<list.length;i++){
+          item = list[i];
+          txt = fillTemplate(item.text, item.scale, item.drawCm);
+          h += '<div class="md-context-item">';
+          h += '<strong>' + (i+1) + '.</strong> ' + esc(txt);
+          h += '<div class="md-answer-line">Antwoord: ';
+          if(answers){
+            h += '<strong>' + formatNl(item.answer) + ' ' + item.unit + '</strong>';
+          } else {
+            h += '<span class="md-blank"></span> ' + item.unit;
+          }
+          h += '</div></div>';
+        }
+
+        h += '</div></section>';
+        return h;
+      }
+
+      function renderSections(data, answers){
+        var sections = getVisibleSections(data);
+        var h = '';
+        var i, section;
+
+        for(i = 0; i < sections.length; i++){
+          section = sections[i];
+          if(section.type === 'cm'){
+            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'cm');
+          } else if(section.type === 'm'){
+            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'm');
+          } else {
+            h += renderContextSection(i + 1, section.title, section.subtitle, section.items, answers);
+          }
+        }
+
+        return h;
+      }
+
+      function renderInfoBlock(isAnswers){
+        var h = '';
+        h += '<div class="md-info">';
+        h += '<div class="md-info-left">';
+        h += '<div class="md-info-box md-name"><span class="md-info-label">Naam</span>' + (isAnswers ? '<div><strong>Antwoordmodel</strong></div>' : '<div class="md-line"></div>') + '</div>';
+        h += '<div class="md-info-box md-date"><span class="md-info-label">Datum</span>' + (isAnswers ? '<div><strong>—</strong></div>' : '<div class="md-line"></div>') + '</div>';
+        h += '</div>';
+        h += '<div class="md-info-box md-logo-box"><img src="' + esc(LOGO_URL) + '" alt="MeesterDanny logo"></div>';
+        h += '</div>';
+        return h;
+      }
+
+      function renderPage(data, answers){
+        var h = '';
+        h += '<div class="md-page' + (answers && !answersVisible ? ' md-hidden' : '') + '">';
+        h += '<div class="md-page-head">';
+        h += '<div><h3 class="md-page-title">' + (answers ? 'Antwoordenblad' : 'Leerlingblad') + '</h3><div class="md-sub">Rekenen met schaal</div></div>';
+        h += '</div>';
+
+        h += renderInfoBlock(answers);
+        h += renderSections(data, answers);
+        h += '<div class="md-foot">Gemaakt op www.meesterdanny.com</div>';
+        h += '</div>';
+        return h;
+      }
+
+      function measureStudentPageHeight(settings){
+        var versionSeed = 'measure-' + [
+          settings.count1,
+          settings.count2,
+          settings.count3,
+          settings.minCm,
+          settings.maxCm,
+          settings.scales.join('-'),
+          settings.meterMode,
+          settings.inc1 ? '1' : '0',
+          settings.inc2 ? '1' : '0',
+          settings.inc3 ? '1' : '0'
+        ].join('-');
+
+        var tempData = buildData(settings, versionSeed);
+        var oldAnswersState = answersVisible;
+        answersVisible = true;
+        boxMeasure.innerHTML = renderPage(tempData, false);
+
+        var page = boxMeasure.querySelector('.md-page');
+        var height = 0;
+        if(page){
+          height = page.offsetHeight;
+        }
+
+        boxMeasure.innerHTML = '';
+        answersVisible = oldAnswersState;
+        return height;
+      }
+
+      function fitsOnOneA4(settings){
+        var measuredHeight = measureStudentPageHeight(settings);
+        return measuredHeight <= getPrintablePageHeightPx();
+      }
+
+      function fitStatus(settings){
+        if(fitsOnOneA4(settings)){
+          return {
+            state:'good',
+            label:'Past goed op 1 A4',
+            text:'De huidige keuze past naar verwachting op 1 A4 leerlingblad.'
+          };
+        }
+
+        return {
+          state:'bad',
+          label:'Past niet op 1 A4',
+          text:'Deze keuze is te groot voor 1 A4 leerlingblad.'
+        };
+      }
+
+      function updateLiveFit(){
+        var s = clampCounts(getSettings());
+        var status = fitStatus(s);
+
+        fitPill.className = 'md-live-pill';
+        if(status.state === 'bad'){
+          fitPill.className += ' bad';
+        }
+
+        fitPill.textContent = status.label;
+        fitText.textContent = status.text;
+      }
+
+      function renderAll(data){
+        var total = data.s1.length + data.s2.length + data.s3.length;
+
+        if(!total){
+          boxPages.innerHTML = '<div class="md-empty">Er konden geen passende opgaven worden gemaakt met deze instellingen. Kies bijvoorbeeld meer schalen, een groter bereik of zet kommagetallen toe.</div>';
+          return;
+        }
+
+        boxPages.innerHTML = renderPage(data, false) + renderPage(data, true);
+      }
+
+      function updateAnswerButton(){
+        btnAns.innerHTML = answersVisible ? 'Verberg antwoordenblad' : 'Toon antwoordenblad';
+      }
+
+      function generate(isNew){
+        var s, err, versionSeed, data;
+        clearError();
+
+        s = getSettings();
+        s = clampCounts(s);
+        err = validate(s);
+
+        if(err){
+          boxStatus.innerHTML = err;
+          boxPages.innerHTML = '<div class="md-empty">' + esc(err) + '</div>';
+          return;
+        }
+
+        if(!fitsOnOneA4(s)){
+          boxStatus.innerHTML = 'De gekozen combinatie is te groot.';
+          showError(buildTooLargeMessage(s));
+          boxPages.innerHTML = '<div class="md-empty">Deze combinatie past niet netjes op 1 A4 leerlingblad. Pas de aantallen aan en probeer opnieuw.</div>';
+          return;
+        }
+
+        if(isNew){
+          versionCounter++;
+        } else {
+          versionCounter = 0;
+        }
+
+        versionSeed = 'versie-' + versionCounter + '-' + s.count1 + '-' + s.count2 + '-' + s.count3 + '-' + s.minCm + '-' + s.maxCm + '-' + s.scales.join('-') + '-' + s.meterMode + '-' + (s.inc1 ? '1' : '0') + (s.inc2 ? '1' : '0') + (s.inc3 ? '1' : '0');
+
+        data = buildData(s, versionSeed);
+        currentData = data;
+
+        renderAll(data);
+        boxStatus.innerHTML = 'Werkblad gegenereerd.';
+        updateAnswerButton();
+      }
+
+      function bindLiveInputs(){
+        var liveInputs = [
+          elCount1, elCount2, elCount3,
+          elMin, elMax, elScales, elMeter,
+          elInc1, elInc2, elInc3
+        ];
+
+        var i;
+        for(i = 0; i < liveInputs.length; i++){
+          liveInputs[i].addEventListener('input', updateLiveFit);
+          liveInputs[i].addEventListener('change', updateLiveFit);
+        }
+      }
+
+      try{
+        btnGen.onclick = function(){
+          generate(false);
+        };
+
+        btnNew.onclick = function(){
+          generate(true);
+        };
+
+        btnAns.onclick = function(){
+          answersVisible = !answersVisible;
+          if(currentData){
+            renderAll(currentData);
+          }
+          updateAnswerButton();
+        };
+
+        btnPrint.onclick = function(){
+          var old = answersVisible;
+          answersVisible = true;
+          if(currentData){
+            renderAll(currentData);
+          }
+          window.print();
+          answersVisible = old;
+          if(currentData){
+            renderAll(currentData);
+          }
+          updateAnswerButton();
+        };
+
+        bindLiveInputs();
+        updateLiveFit();
+        updateAnswerButton();
+        generate(false);
+      } catch(e){
+        showError('Er ging iets mis bij het starten van de tool:\n' + e.message);
+      }
+    })();
+  </script>
+</body>
+</html>
