@@ -741,13 +741,20 @@
       }
 
       function getSettings(){
+        var scalesValue = elScales ? elScales.value : 'basis';
+        var parsedScales = parseScales(scalesValue);
+
+        if(!Array.isArray(parsedScales)){
+          parsedScales = [];
+        }
+
         return {
           count1: parseInt(elCount1.value,10) || 0,
           count2: parseInt(elCount2.value,10) || 0,
           count3: parseInt(elCount3.value,10) || 0,
           minCm: parseFloat(String(elMin.value).replace(',','.')) || 0,
           maxCm: parseFloat(String(elMax.value).replace(',','.')) || 0,
-          scales: parseScales(elScales.value),
+          scales: parsedScales,
           meterMode: elMeter.value,
           inc1: elInc1.checked,
           inc2: elInc2.checked,
