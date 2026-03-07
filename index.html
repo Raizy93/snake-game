@@ -754,6 +754,10 @@
         return 1008;
       }
 
+      function getFitTolerancePx(){
+        return 24;
+      }
+
       function buildTooLargeMessage(s){
         var msg = 'Deze combinatie is te groot voor 1 A4 leerlingblad.\n';
         msg += 'Kies minder opgaven of zet een onderdeel uit.\n\n';
@@ -1102,7 +1106,8 @@ function contextTemplates(){
 
       function fitsOnOneA4(settings){
         var measuredHeight = measureStudentPageHeight(settings);
-        return measuredHeight <= getPrintablePageHeightPx();
+        var safeLimit = getPrintablePageHeightPx() + getFitTolerancePx();
+        return measuredHeight <= safeLimit;
       }
 
       function fitStatus(settings){
