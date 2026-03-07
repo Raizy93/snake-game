@@ -598,6 +598,32 @@
       var fitPill = get('mdFitPill_x91824');
       var fitText = get('mdFitText_x91824');
 
+      function ensureScalesDropdown(){
+        var holder, help, select;
+        if(!elScales){ return; }
+        if(elScales.tagName && elScales.tagName.toUpperCase() === 'SELECT'){ return; }
+
+        holder = elScales.parentNode;
+        if(!holder){ return; }
+
+        help = holder.querySelector('.md-help');
+
+        select = document.createElement('select');
+        select.id = 'mdScales_x91824';
+        select.innerHTML = '' +
+          '<option value="basis">Basis - 10, 25, 50, 75%</option>' +
+          '<option value="gevorderd">Gevorderd - alle vijf- en tientallen t/m 100%</option>' +
+          '<option value="moeilijk">Moeilijk - willekeurig tussen 1 en 100%</option>' +
+          '<option value="zeer-moeilijk">Zeer moeilijk - willekeurig tussen 0 en 100%, ook halve procenten</option>';
+
+        holder.replaceChild(select, elScales);
+        elScales = select;
+
+        if(help){
+          help.textContent = 'Kies een niveau; de generator gebruikt automatisch bijpassende percentages.';
+        }
+      }
+
       function normalizeTopTitle(){
         var titleEl = root.querySelector('.md-title');
         if(!titleEl){ return; }
@@ -682,6 +708,50 @@
         var out = [];
         var i, raw, parts, n, key;
         var seen = {};
+
+        try{
+          raw = String(value || '').toLowerCase().trim();
+
+          if(raw === 'basis'){
+            return [10,25,50,75];
+          }
+
+          if(raw === 'gevorderd'){
+            for(i=5;i<=100;i+=5){
+              out.push(i);
+            }
+            return out;
+          }
+
+          if(raw === 'moeilijk'){
+            for(i=1;i<=100;i++){
+              out.push(i);
+            }
+            return out;
+          }
+
+          if(raw === 'zeer-moeilijk'){
+            for(i=0;i<=200;i++){
+              out.push(i / 2);
+            }
+            return out;
+          }
+
+          /* Backward compatibility: support old comma-separated input values. */
+          parts = String(raw || '').split(',');
+          for(i=0;i<parts.length;i++){
+            n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
+            key = String(n);
+            if(!isNaN(n) && n >= 0 && n <= 100 && !seen[key]){
+              out.push(n);
+              seen[key] = true;
+            }
+          }
+
+          return out.length ? out : [10,25,50,75];
+        } catch(e){
+          return [10,25,50,75];
+        }
         var i, n, key;
         for(i=0;i<parts.length;i++){
           n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
@@ -1280,7 +1350,21 @@ function contextTemplates(){
         bindLiveInputs();
         updateLiveFit();
         updateAnswerButton();
-        generate(false);
+
+        try{
+          generate(false);
+        } catch(startErr){
+          if(startErr && /length/i.test(String(startErr.message || ''))){
+            try{
+              if(elScales){
+                elScales.value = 'basis';
+              }
+            } catch(_ignore){}
+            generate(false);
+          } else {
+            throw startErr;
+          }
+        }
       } catch(e){
         showError('Er ging iets mis bij het starten van de tool:\n' + e.message);
       }
