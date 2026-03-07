@@ -467,7 +467,6 @@
     <div class="md-top">
       <div>
         <h2 class="md-title">MeesterDanny - Werkblad-generator: Procenten</h2>
-        <h2 class="md-title">MeesterDanny werkblad-generator</h2>
         <p class="md-sub">Rekenen met procenten • groep 7/8 • compacte weergave</p>
       </div>
       <div class="md-badge">Bereken percentages snel en compact</div>
@@ -700,34 +699,21 @@
         var vals = [];
         var start = Math.round(minV);
         var end = Math.round(maxV);
+        var step = 10;
+        var first;
         var i;
 
-        function pushByStep(step){
-          var local = [];
-          var first = Math.ceil(start / step) * step;
-          for(i = first; i <= end; i += step){
-            local.push(i);
-          }
-          return local;
+        first = Math.ceil(start / step) * step;
+        if(first > end){
+          step = 5;
+          first = Math.ceil(start / step) * step;
+        }
+        if(first > end){
+          step = 1;
+          first = Math.ceil(start / step) * step;
         }
 
-        vals = pushByStep(10);
-        if(!vals.length){
-          vals = pushByStep(5);
-        }
-        if(!vals.length){
-          vals = pushByStep(1);
-        }
-
-        }
-
-        vals = pushByStep(10);
-        if(!vals.length){
-          vals = pushByStep(5);
-        }
-        if(!vals.length){
-          vals = pushByStep(1);
-        for(i=start;i<=end;i++){
+        for(i = first; i <= end; i += step){
           vals.push(i);
         }
 
