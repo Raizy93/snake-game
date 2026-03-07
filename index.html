@@ -532,14 +532,9 @@
               </div>
 
               <div class="md-field md-c6">
-                <label for="mdScales_x91824">Niveau percentages</label>
-                <select id="mdScales_x91824">
-                  <option value="basis">☑ Basis - 10, 25, 50, 75%</option>
-                  <option value="gevorderd">☑ Gevorderd - alle vijf- en tientallen t/m 100%</option>
-                  <option value="moeilijk">☑ Moeilijk - willekeurig tussen 1 en 100%</option>
-                  <option value="zeer-moeilijk">☑ Zeer moeilijk - willekeurig tussen 0 en 100%, ook halve procenten</option>
-                </select>
-                <div class="md-help">Kies een niveau in het dropdownmenu (☑-opties); de generator gebruikt automatisch bijpassende percentages.</div>
+                <label for="mdScales_x91824">Toegestane percentages</label>
+                <input id="mdScales_x91824" type="text" value="1,5,10,20,25,50,75">
+                <div class="md-help">Bijvoorbeeld: 1,5,10,20,25,50,75</div>
               </div>
             </div>
           </div>
@@ -603,6 +598,31 @@
       var fitPill = get('mdFitPill_x91824');
       var fitText = get('mdFitText_x91824');
 
+      function ensureScalesDropdown(){
+        var holder, help, select;
+        if(!elScales){ return; }
+        if(elScales.tagName && elScales.tagName.toUpperCase() === 'SELECT'){ return; }
+
+        holder = elScales.parentNode;
+        if(!holder){ return; }
+
+        help = holder.querySelector('.md-help');
+
+        select = document.createElement('select');
+        select.id = 'mdScales_x91824';
+        select.innerHTML = '' +
+          '<option value="basis">Basis - 10, 25, 50, 75%</option>' +
+          '<option value="gevorderd">Gevorderd - alle vijf- en tientallen t/m 100%</option>' +
+          '<option value="moeilijk">Moeilijk - willekeurig tussen 1 en 100%</option>' +
+          '<option value="zeer-moeilijk">Zeer moeilijk - willekeurig tussen 0 en 100%, ook halve procenten</option>';
+
+        holder.replaceChild(select, elScales);
+        elScales = select;
+
+        if(help){
+          help.textContent = 'Kies een niveau; de generator gebruikt automatisch bijpassende percentages.';
+        }
+      }
 
       function normalizeTopTitle(){
         var titleEl = root.querySelector('.md-title');
@@ -685,29 +705,72 @@
       }
 
       function parseScales(value){
-        var raw = String(value || '').toLowerCase().trim();
         var out = [];
-        var i;
+        var i, raw, parts, n, key;
+        var seen = {};
 
-        if(raw === 'basis'){
+        try{
+          raw = String(value || '').toLowerCase().trim();
+
+          if(raw === 'basis'){
+            return [10,25,50,75];
+          }
+
+          if(raw === 'gevorderd'){
+            for(i=5;i<=100;i+=5){
+              out.push(i);
+            }
+            return out;
+          }
+
+          if(raw === 'moeilijk'){
+            for(i=1;i<=100;i++){
+              out.push(i);
+            }
+            return out;
+          }
+
+          if(raw === 'zeer-moeilijk'){
+            for(i=0;i<=200;i++){
+              out.push(i / 2);
+            }
+            return out;
+          }
+
+          /* Backward compatibility: support old comma-separated input values. */
+          parts = String(raw || '').split(',');
+          for(i=0;i<parts.length;i++){
+            n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
+            key = String(n);
+            if(!isNaN(n) && n >= 0 && n <= 100 && !seen[key]){
+              out.push(n);
+              seen[key] = true;
+            }
+          }
+
+          return out.length ? out : [10,25,50,75];
+        } catch(e){
           return [10,25,50,75];
         }
-
-        if(raw === 'gevorderd'){
-          for(i=5;i<=100;i+=5){
-            out.push(i);
+        var i, n, key;
+        for(i=0;i<parts.length;i++){
+          n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
+          key = String(n);
+          if(!isNaN(n) && n > 0 && n <= 100 && !seen[key]){
+            out.push(n);
+            seen[key] = true;
           }
           return out;
         }
 
-        if(raw === 'moeilijk'){
+        if(value === 'moeilijk'){
           for(i=1;i<=100;i++){
             out.push(i);
           }
           return out;
         }
 
-        if(raw === 'zeer-moeilijk'){
+        if(value === 'zeer-moeilijk'){
           for(i=0;i<=200;i++){
             out.push(i / 2);
           }
@@ -771,7 +834,7 @@
       function validate(s){
         if(s.minCm <= 0 || s.maxCm <= 0){ return 'Minimum en maximum moeten groter zijn dan 0.'; }
         if(s.minCm > s.maxCm){ return 'Het minimum mag niet groter zijn dan het maximum.'; }
-        if(!Array.isArray(s.scales) || !s.scales.length){ return 'Kies een geldig percentage-niveau.'; }
+        if(!s.scales.length){ return 'Vul minstens één geldig percentage in.'; }
         if(!s.inc1 && !s.inc2 && !s.inc3){ return 'Zet minstens één onderdeel aan.'; }
         return '';
       }
@@ -832,19 +895,18 @@
         var list = [];
         var candidates = [];
         var bases = drawingValues(s.minCm, s.maxCm);
-        var scales = Array.isArray(s.scales) ? s.scales : [];
         var i, j, result, ok, shuffled;
 
-        for(i=0;i<scales.length;i++){
+        for(i=0;i<s.scales.length;i++){
           for(j=0;j<bases.length;j++){
-            result = (bases[j] * scales[i]) / 100;
+            result = (bases[j] * s.scales[i]) / 100;
             ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
             if(ok){
               candidates.push({
-                percent:scales[i],
+                percent:s.scales[i],
                 base:bases[j],
                 answer:Math.round(result * 100) / 100,
-                key:'s1|' + scales[i] + '|' + bases[j]
+                key:'s1|' + s.scales[i] + '|' + bases[j]
               });
             }
           }
@@ -861,22 +923,21 @@
         var list = [];
         var candidates = [];
         var bases = drawingValues(s.minCm, s.maxCm);
-        var scales = Array.isArray(s.scales) ? s.scales : [];
         var units = ['leerlingen','euro','minuten','stickers','punten','boeken','knikkers'];
         var i, j, k, result, ok, shuffled;
 
-        for(i=0;i<scales.length;i++){
+        for(i=0;i<s.scales.length;i++){
           for(j=0;j<bases.length;j++){
-            result = (bases[j] * scales[i]) / 100;
+            result = (bases[j] * s.scales[i]) / 100;
             ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
             if(ok){
               for(k=0;k<units.length;k++){
                 candidates.push({
-                  percent:scales[i],
+                  percent:s.scales[i],
                   base:bases[j],
                   unit:units[k],
                   answer:Math.round(result * 100) / 100,
-                  key:'s2|' + scales[i] + '|' + bases[j] + '|' + units[k]
+                  key:'s2|' + s.scales[i] + '|' + bases[j] + '|' + units[k]
                 });
               }
             }
@@ -911,23 +972,22 @@ function contextTemplates(){
         var list = [];
         var temp = contextTemplates();
         var bases = drawingValues(s.minCm, s.maxCm);
-        var scales = Array.isArray(s.scales) ? s.scales : [];
         var candidates = [];
         var i, j, k, result, ok, shuffled;
 
         for(i=0;i<temp.length;i++){
-          for(j=0;j<scales.length;j++){
+          for(j=0;j<s.scales.length;j++){
             for(k=0;k<bases.length;k++){
-              result = (bases[k] * scales[j]) / 100;
+              result = (bases[k] * s.scales[j]) / 100;
               ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
               if(ok){
                 candidates.push({
                   text:temp[i].text,
                   unit:temp[i].unit,
-                  percent:scales[j],
+                  percent:s.scales[j],
                   base:bases[k],
                   answer:Math.round(result * 100) / 100,
-                  key:'s3|' + temp[i].name + '|' + scales[j] + '|' + bases[k]
+                  key:'s3|' + temp[i].name + '|' + s.scales[j] + '|' + bases[k]
                 });
               }
             }
@@ -1291,7 +1351,20 @@ function contextTemplates(){
         updateLiveFit();
         updateAnswerButton();
 
-        generate(false);
+        try{
+          generate(false);
+        } catch(startErr){
+          if(startErr && /length/i.test(String(startErr.message || ''))){
+            try{
+              if(elScales){
+                elScales.value = 'basis';
+              }
+            } catch(_ignore){}
+            generate(false);
+          } else {
+            throw startErr;
+          }
+        }
       } catch(e){
         showError('Er ging iets mis bij het starten van de tool:\n' + e.message);
       }
