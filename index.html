@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MeesterDanny - Werkblad-generator: Procenten</title>
   <title>MeesterDanny werkblad-generator - procenten</title>
   <style>
     #md-schaaltool-x91824{
@@ -465,6 +466,7 @@
   <div id="md-schaaltool-x91824">
     <div class="md-top">
       <div>
+        <h2 class="md-title">MeesterDanny - Werkblad-generator: Procenten</h2>
         <h2 class="md-title">MeesterDanny werkblad-generator</h2>
         <p class="md-sub">Rekenen met procenten • groep 7/8 • compacte weergave</p>
       </div>
@@ -682,9 +684,26 @@
         var start = Math.round(minV);
         var end = Math.round(maxV);
         var i;
+
+        function pushByStep(step){
+          var local = [];
+          var first = Math.ceil(start / step) * step;
+          for(i = first; i <= end; i += step){
+            local.push(i);
+          }
+          return local;
+        }
+
+        vals = pushByStep(10);
+        if(!vals.length){
+          vals = pushByStep(5);
+        }
+        if(!vals.length){
+          vals = pushByStep(1);
         for(i=start;i<=end;i++){
           vals.push(i);
         }
+
         return vals;
       }
 
