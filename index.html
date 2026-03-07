@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MeesterDanny werkblad-generator - schaal</title>
+  <title>MeesterDanny - Werkblad-generator: Procenten</title>
   <style>
     #md-schaaltool-x91824{
       font-family:Arial,Helvetica,sans-serif;
@@ -465,10 +465,10 @@
   <div id="md-schaaltool-x91824">
     <div class="md-top">
       <div>
-        <h2 class="md-title">MeesterDanny werkblad-generator</h2>
-        <p class="md-sub">Rekenen met schaal • groep 7/8 • compacte weergave</p>
+        <h2 class="md-title">MeesterDanny - Werkblad-generator: Procenten</h2>
+        <p class="md-sub">Rekenen met procenten • groep 7/8 • compacte weergave</p>
       </div>
-      <div class="md-badge">X cm op de tekening is … cm / m in het echt</div>
+      <div class="md-badge">Bereken percentages snel en compact</div>
     </div>
 
     <div class="md-panel">
@@ -479,8 +479,8 @@
           <div class="md-section-box">
             <div class="md-section-box-title">1. Kies welke onderdelen je wilt opnemen</div>
             <div class="md-choice-grid">
-              <label class="md-check"><input id="mdInc1_x91824" type="checkbox" checked> Reken uit in centimeters</label>
-              <label class="md-check"><input id="mdInc2_x91824" type="checkbox" checked> Reken uit in meters</label>
+              <label class="md-check"><input id="mdInc1_x91824" type="checkbox" checked> Kale procentensommen</label>
+              <label class="md-check"><input id="mdInc2_x91824" type="checkbox" checked> Procenten van een hoeveelheid</label>
               <label class="md-check"><input id="mdInc3_x91824" type="checkbox" checked> Contextopgaven / verhaalsommen</label>
             </div>
           </div>
@@ -491,12 +491,12 @@
             <div class="md-section-box-title">2. Kies het aantal opgaven per onderdeel</div>
             <div class="md-grid">
               <div class="md-field md-c4">
-                <label for="mdCount1_x91824">Aantal sommen cm</label>
+                <label for="mdCount1_x91824">Aantal kale procentensommen</label>
                 <input id="mdCount1_x91824" type="number" min="0" max="30" value="6">
               </div>
 
               <div class="md-field md-c4">
-                <label for="mdCount2_x91824">Aantal sommen m</label>
+                <label for="mdCount2_x91824">Aantal sommen procenten van een hoeveelheid</label>
                 <input id="mdCount2_x91824" type="number" min="0" max="30" value="6">
               </div>
 
@@ -514,27 +514,32 @@
             <div class="md-section-box-title">3. Overige instellingen</div>
             <div class="md-grid">
               <div class="md-field md-c3">
-                <label for="mdMinCm_x91824">Minimum cm tekening</label>
-                <input id="mdMinCm_x91824" type="number" min="1" step="0.5" value="2">
+                <label for="mdMinCm_x91824">Minimum basisgetal</label>
+                <input id="mdMinCm_x91824" type="number" min="1" step="1" value="20">
               </div>
 
               <div class="md-field md-c3">
-                <label for="mdMaxCm_x91824">Maximum cm tekening</label>
-                <input id="mdMaxCm_x91824" type="number" min="1" step="0.5" value="12">
+                <label for="mdMaxCm_x91824">Maximum basisgetal</label>
+                <input id="mdMaxCm_x91824" type="number" min="1" step="1" value="400">
               </div>
 
               <div class="md-field md-c6">
-                <label for="mdMeterMode_x91824">Antwoorden in meters</label>
+                <label for="mdMeterMode_x91824">Uitkomsten</label>
                 <select id="mdMeterMode_x91824">
-                  <option value="pretty">Alleen helen en halven</option>
+                  <option value="whole">Alleen hele uitkomsten</option>
                   <option value="decimal">Ook kommagetallen toestaan</option>
                 </select>
               </div>
 
               <div class="md-field md-c6">
-                <label for="mdScales_x91824">Toegestane schalen</label>
-                <input id="mdScales_x91824" type="text" value="10,20,25,50,100,200,250,500">
-                <div class="md-help">Bijvoorbeeld: 10,20,25,50,100,200,250,500</div>
+                <label for="mdScales_x91824">Niveau percentages</label>
+                <select id="mdScales_x91824">
+                  <option value="basis">Basis - 10, 25, 50, 75%</option>
+                  <option value="gevorderd">Gevorderd - alle vijf- en tientallen t/m 100%</option>
+                  <option value="moeilijk">Moeilijk - willekeurig tussen 1 en 100%</option>
+                  <option value="zeer-moeilijk">Zeer moeilijk - willekeurig tussen 0 en 100%, ook halve procenten</option>
+                </select>
+                <div class="md-help">Kies een niveau; de generator gebruikt automatisch bijpassende percentages.</div>
               </div>
             </div>
           </div>
@@ -597,6 +602,23 @@
       var boxMeasure = get('mdMeasure_x91824');
       var fitPill = get('mdFitPill_x91824');
       var fitText = get('mdFitText_x91824');
+
+      function normalizeTopTitle(){
+        var titleEl = root.querySelector('.md-title');
+        if(!titleEl){ return; }
+        var clean = String(titleEl.textContent || '')
+          .replace(/MeesterDanny\s+werkblad-generator/gi,'')
+          .replace(/\n+/g,' ')
+          .replace(/\s{2,}/g,' ')
+          .trim();
+        if(clean){
+          titleEl.textContent = clean;
+        }
+      }
+
+      function requiredElementsOk(){
+        return !!(elCount1 && elCount2 && elCount3 && elMin && elMax && elScales && elMeter && elInc1 && elInc2 && elInc3 && btnGen && btnNew && btnAns && btnPrint && boxStatus && boxError && boxPages && boxMeasure && fitPill && fitText);
+      }
 
       var versionCounter = 0;
       var answersVisible = false;
@@ -662,35 +684,78 @@
       }
 
       function parseScales(value){
-        var parts = value.split(',');
         var out = [];
+        var i, raw, parts, n, key;
         var seen = {};
-        var i, n;
+
+        raw = String(value || '').toLowerCase().trim();
+
+        if(raw === 'basis'){
+          return [10,25,50,75];
+        }
+
+        if(raw === 'gevorderd'){
+          for(i=5;i<=100;i+=5){
+            out.push(i);
+          }
+          return out;
+        }
+
+        if(raw === 'moeilijk'){
+          for(i=1;i<=100;i++){
+            out.push(i);
+          }
+          return out;
+        }
+
+        if(raw === 'zeer-moeilijk'){
+          for(i=0;i<=200;i++){
+            out.push(i / 2);
+          }
+          return out;
+        }
+
+        /* Backward compatibility: support old comma-separated input values. */
+        parts = raw.split(',');
         for(i=0;i<parts.length;i++){
-          n = parseInt(String(parts[i]).replace(/\s+/g,''),10);
-          if(!isNaN(n) && n > 0 && !seen[n]){
+          n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
+          key = String(n);
+          if(!isNaN(n) && n >= 0 && n <= 100 && !seen[key]){
             out.push(n);
-            seen[n] = true;
+            seen[key] = true;
           }
         }
-        return out;
+
+        return out.length ? out : [10,25,50,75];
       }
 
       function drawingValues(minV, maxV){
         var vals = [];
-        var start = Math.round(minV * 2);
-        var end = Math.round(maxV * 2);
+        var start = Math.round(minV);
+        var end = Math.round(maxV);
+        var step = 10;
+        var first;
         var i;
-        for(i=start;i<=end;i++){
-          vals.push(i / 2);
+
+        first = Math.ceil(start / step) * step;
+        if(first > end){
+          step = 5;
+          first = Math.ceil(start / step) * step;
         }
+        if(first > end){
+          step = 1;
+          first = Math.ceil(start / step) * step;
+        }
+
+        for(i = first; i <= end; i += step){
+          vals.push(i);
+        }
+
         return vals;
       }
 
-      function prettyMeter(m){
-        var rounded = Math.round(m * 100) / 100;
-        var tenth = Math.round(rounded * 10) / 10;
-        return Math.abs(rounded - Math.round(rounded)) < 0.0000001 || Math.abs(rounded - tenth) < 0.0000001;
+      function isWholeResult(v){
+        return Math.abs(v - Math.round(v)) < 0.0000001;
       }
 
       function getSettings(){
@@ -711,7 +776,7 @@
       function validate(s){
         if(s.minCm <= 0 || s.maxCm <= 0){ return 'Minimum en maximum moeten groter zijn dan 0.'; }
         if(s.minCm > s.maxCm){ return 'Het minimum mag niet groter zijn dan het maximum.'; }
-        if(!s.scales.length){ return 'Vul minstens één geldige schaal in.'; }
+        if(!s.scales.length){ return 'Kies een geldig percentage-niveau.'; }
         if(!s.inc1 && !s.inc2 && !s.inc3){ return 'Zet minstens één onderdeel aan.'; }
         return '';
       }
@@ -736,18 +801,22 @@
         return 1008;
       }
 
+      function getFitTolerancePx(){
+        return 24;
+      }
+
       function buildTooLargeMessage(s){
         var msg = 'Deze combinatie is te groot voor 1 A4 leerlingblad.\n';
         msg += 'Kies minder opgaven of zet een onderdeel uit.\n\n';
 
         if(s.inc1 && s.inc2 && s.inc3){
-          msg += 'Handige richtlijn bij alle drie onderdelen: ongeveer 6 cm-sommen, 6 m-sommen en 3 contextopgaven.';
+          msg += 'Handige richtlijn bij alle drie onderdelen: ongeveer 8 kale sommen, 8 hoeveelheid-sommen en 3 contextopgaven.';
         } else if(s.inc1 && s.inc2 && !s.inc3){
-          msg += 'Handige richtlijn bij alleen centimeters + meters: ongeveer 10 tot 12 sommen per onderdeel.';
+          msg += 'Handige richtlijn bij alleen kale sommen + hoeveelheid-sommen: ongeveer 10 tot 12 sommen per onderdeel.';
         } else if(s.inc1 && !s.inc2 && !s.inc3){
-          msg += 'Bij alleen centimeters kun je meer kwijt, maar deze keuze is nu te groot.';
+          msg += 'Bij alleen kale procentensommen kun je meer kwijt, maar deze keuze is nu te groot.';
         } else if(!s.inc1 && s.inc2 && !s.inc3){
-          msg += 'Bij alleen meters kun je meer kwijt, maar deze keuze is nu te groot.';
+          msg += 'Bij alleen procenten van een hoeveelheid kun je meer kwijt, maar deze keuze is nu te groot.';
         } else if(!s.inc1 && !s.inc2 && s.inc3){
           msg += 'Bij alleen contextopgaven geldt een maximum van 16 opgaven. Daarboven past het niet netjes op 1 A4.';
         } else {
@@ -767,17 +836,21 @@
       function makeSection1(rng, s, used){
         var list = [];
         var candidates = [];
-        var draws = drawingValues(s.minCm, s.maxCm);
-        var i, j, shuffled;
+        var bases = drawingValues(s.minCm, s.maxCm);
+        var i, j, result, ok, shuffled;
 
         for(i=0;i<s.scales.length;i++){
-          for(j=0;j<draws.length;j++){
-            candidates.push({
-              scale:s.scales[i],
-              drawCm:draws[j],
-              answerCm:draws[j] * s.scales[i],
-              key:'s1|' + s.scales[i] + '|' + draws[j]
-            });
+          for(j=0;j<bases.length;j++){
+            result = (bases[j] * s.scales[i]) / 100;
+            ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
+            if(ok){
+              candidates.push({
+                percent:s.scales[i],
+                base:bases[j],
+                answer:Math.round(result * 100) / 100,
+                key:'s1|' + s.scales[i] + '|' + bases[j]
+              });
+            }
           }
         }
 
@@ -791,20 +864,24 @@
       function makeSection2(rng, s, used){
         var list = [];
         var candidates = [];
-        var draws = drawingValues(s.minCm, s.maxCm);
-        var i, j, meters, ok, shuffled;
+        var bases = drawingValues(s.minCm, s.maxCm);
+        var units = ['leerlingen','euro','minuten','stickers','punten','boeken','knikkers'];
+        var i, j, k, result, ok, shuffled;
 
         for(i=0;i<s.scales.length;i++){
-          for(j=0;j<draws.length;j++){
-            meters = (draws[j] * s.scales[i]) / 100;
-            ok = s.meterMode === 'pretty' ? prettyMeter(meters) : true;
+          for(j=0;j<bases.length;j++){
+            result = (bases[j] * s.scales[i]) / 100;
+            ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
             if(ok){
-              candidates.push({
-                scale:s.scales[i],
-                drawCm:draws[j],
-                answerM:Math.round(meters * 100) / 100,
-                key:'s2|' + s.scales[i] + '|' + draws[j]
-              });
+              for(k=0;k<units.length;k++){
+                candidates.push({
+                  percent:s.scales[i],
+                  base:bases[j],
+                  unit:units[k],
+                  answer:Math.round(result * 100) / 100,
+                  key:'s2|' + s.scales[i] + '|' + bases[j] + '|' + units[k]
+                });
+              }
             }
           }
         }
@@ -818,94 +895,41 @@
 
 function contextTemplates(){
   return [
-    {name:'speeltuin', text:'Op een plattegrond van een speeltuin staat de schaal 1 : {S}. De glijbaan is {C} cm lang op de tekening. Hoe lang is de glijbaan in het echt?', unit:'m'},
-    {name:'huis', text:'Op een bouwtekening van een huis staat de schaal 1 : {S}. De woonkamer is {C} cm breed op de tekening. Hoe breed is de woonkamer in het echt?', unit:'m'},
-    {name:'schatkaart', text:'Op een schatkaart staat de schaal 1 : {S}. Het pad naar de schatkist is {C} cm lang op de kaart. Hoe lang is dat in het echt?', unit:'m'},
-    {name:'voetbalveld', text:'Op een tekening van een voetbalveld staat de schaal 1 : {S}. De zijlijn is {C} cm lang op de tekening. Hoe lang is de zijlijn in het echt?', unit:'m'},
-    {name:'dierentuin', text:'Op een plattegrond van een dierentuin staat de schaal 1 : {S}. Het olifantenverblijf is {C} cm lang op de tekening. Hoe lang is dat in het echt?', unit:'m'},
-    {name:'schoolplein', text:'Op een plattegrond van een schoolplein staat de schaal 1 : {S}. De zandbak is {C} cm lang op de tekening. Hoe lang is de zandbak in het echt?', unit:'cm'},
-    {name:'camping', text:'Op een plattegrond van een camping staat de schaal 1 : {S}. Het zwembad is {C} cm lang op de tekening. Hoe lang is het zwembad in het echt?', unit:'m'},
-    {name:'slaapkamer', text:'Op een bouwtekening van een slaapkamer staat de schaal 1 : {S}. Het bed is {C} cm lang op de tekening. Hoe lang is het bed in het echt?', unit:'cm'},
-    {name:'park', text:'Op een plattegrond van een park staat de schaal 1 : {S}. De vijver is {C} cm breed op de tekening. Hoe breed is de vijver in het echt?', unit:'m'},
-    {name:'speeltuin-kaart', text:'Op een kaart van een speeltuin staat de schaal 1 : {S}. Het klimrek is {C} cm hoog op de tekening. Hoe hoog is het klimrek in het echt?', unit:'cm'},
-    {name:'museum', text:'Op een plattegrond van een museum staat de schaal 1 : {S}. De grote zaal is {C} cm lang op de tekening. Hoe lang is de zaal in het echt?', unit:'m'},
-    {name:'bibliotheek', text:'Op een plattegrond van een bibliotheek staat de schaal 1 : {S}. De leestafel is {C} cm lang op de tekening. Hoe lang is de leestafel in het echt?', unit:'cm'},
-    {name:'station', text:'Op een plattegrond van een station staat de schaal 1 : {S}. Perron 1 is {C} cm lang op de tekening. Hoe lang is het perron in het echt?', unit:'m'},
-    {name:'supermarkt', text:'Op een plattegrond van een supermarkt staat de schaal 1 : {S}. Het groentepad is {C} cm lang op de tekening. Hoe lang is dat in het echt?', unit:'m'},
-    {name:'ziekenhuis', text:'Op een plattegrond van een ziekenhuis staat de schaal 1 : {S}. De gang naar de spoedafdeling is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
-    {name:'boerderij', text:'Op een plattegrond van een boerderij staat de schaal 1 : {S}. De stal is {C} cm breed op de tekening. Hoe breed is de stal in het echt?', unit:'m'},
-    {name:'manege', text:'Op een plattegrond van een manege staat de schaal 1 : {S}. De rijbak is {C} cm lang op de tekening. Hoe lang is de rijbak in het echt?', unit:'m'},
-    {name:'zwembadgebouw', text:'Op een plattegrond van een zwembadgebouw staat de schaal 1 : {S}. Het wedstrijdbad is {C} cm lang op de tekening. Hoe lang is het bad in het echt?', unit:'m'},
-    {name:'sporthal', text:'Op een plattegrond van een sporthal staat de schaal 1 : {S}. Het basketbalveld is {C} cm breed op de tekening. Hoe breed is het veld in het echt?', unit:'m'},
-    {name:'ijsbaan', text:'Op een plattegrond van een ijsbaan staat de schaal 1 : {S}. De baan is {C} cm lang op de tekening. Hoe lang is de baan in het echt?', unit:'m'},
-
-    {name:'kantoor', text:'Op een bouwtekening van een kantoor staat de schaal 1 : {S}. De vergaderruimte is {C} cm breed op de tekening. Hoe breed is die ruimte in het echt?', unit:'m'},
-    {name:'keuken', text:'Op een bouwtekening van een keuken staat de schaal 1 : {S}. Het aanrecht is {C} cm lang op de tekening. Hoe lang is het aanrecht in het echt?', unit:'cm'},
-    {name:'badkamer', text:'Op een bouwtekening van een badkamer staat de schaal 1 : {S}. Het ligbad is {C} cm lang op de tekening. Hoe lang is het bad in het echt?', unit:'cm'},
-    {name:'woonkamer-raam', text:'Op een bouwtekening van een woonkamer staat de schaal 1 : {S}. Het raam is {C} cm breed op de tekening. Hoe breed is het raam in het echt?', unit:'cm'},
-    {name:'garage', text:'Op een bouwtekening van een garage staat de schaal 1 : {S}. De garagepoort is {C} cm breed op de tekening. Hoe breed is de poort in het echt?', unit:'cm'},
-    {name:'tuin', text:'Op een tuinontwerp staat de schaal 1 : {S}. Het grasveld is {C} cm lang op de tekening. Hoe lang is het grasveld in het echt?', unit:'m'},
-    {name:'schuur', text:'Op een bouwtekening van een schuur staat de schaal 1 : {S}. De schuur is {C} cm breed op de tekening. Hoe breed is de schuur in het echt?', unit:'m'},
-    {name:'kas', text:'Op een bouwtekening van een kas staat de schaal 1 : {S}. De kas is {C} cm lang op de tekening. Hoe lang is de kas in het echt?', unit:'m'},
-    {name:'klaslokaal', text:'Op een bouwtekening van een klaslokaal staat de schaal 1 : {S}. Het digibord is {C} cm breed op de tekening. Hoe breed is het digibord in het echt?', unit:'cm'},
-    {name:'gymzaal', text:'Op een bouwtekening van een gymzaal staat de schaal 1 : {S}. De gymzaal is {C} cm lang op de tekening. Hoe lang is de gymzaal in het echt?', unit:'m'},
-
-    {name:'schoolgebouw', text:'Op een plattegrond van een schoolgebouw staat de schaal 1 : {S}. De gang naar de lokalen is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
-    {name:'schoolbibliotheek', text:'Op een plattegrond van een schoolbibliotheek staat de schaal 1 : {S}. De boekenkast is {C} cm lang op de tekening. Hoe lang is de boekenkast in het echt?', unit:'cm'},
-    {name:'kantine', text:'Op een plattegrond van een kantine staat de schaal 1 : {S}. De uitgiftebalie is {C} cm breed op de tekening. Hoe breed is de balie in het echt?', unit:'cm'},
-    {name:'speelzaal', text:'Op een plattegrond van een speelzaal staat de schaal 1 : {S}. De mat is {C} cm lang op de tekening. Hoe lang is de mat in het echt?', unit:'cm'},
-    {name:'aula', text:'Op een plattegrond van een aula staat de schaal 1 : {S}. Het podium is {C} cm breed op de tekening. Hoe breed is het podium in het echt?', unit:'m'},
-    {name:'fietsenstalling', text:'Op een plattegrond van een fietsenstalling staat de schaal 1 : {S}. De rij fietsenrekken is {C} cm lang op de tekening. Hoe lang is die rij in het echt?', unit:'m'},
-    {name:'schoolroute', text:'Op een plattegrond van een school staat de schaal 1 : {S}. De route van het lokaal naar de uitgang is {C} cm lang op de tekening. Hoe lang is die route in het echt?', unit:'m'},
-    {name:'schooltuin', text:'Op een plattegrond van een schooltuin staat de schaal 1 : {S}. De moestuinbak is {C} cm breed op de tekening. Hoe breed is de bak in het echt?', unit:'cm'},
-    {name:'muzieklokaal', text:'Op een bouwtekening van een muzieklokaal staat de schaal 1 : {S}. De piano is {C} cm lang op de tekening. Hoe lang is de piano in het echt?', unit:'cm'},
-    {name:'technieklokaal', text:'Op een bouwtekening van een technieklokaal staat de schaal 1 : {S}. De werkbank is {C} cm lang op de tekening. Hoe lang is de werkbank in het echt?', unit:'cm'},
-
-    {name:'dierenasiel', text:'Op een plattegrond van een dierenasiel staat de schaal 1 : {S}. Het hondenverblijf is {C} cm lang op de tekening. Hoe lang is dat verblijf in het echt?', unit:'m'},
-    {name:'aquarium', text:'Op een plattegrond van een aquarium staat de schaal 1 : {S}. Het haaienbassin is {C} cm breed op de tekening. Hoe breed is dat bassin in het echt?', unit:'m'},
-    {name:'safaripark', text:'Op een plattegrond van een safaripark staat de schaal 1 : {S}. De route langs de giraffen is {C} cm lang op de tekening. Hoe lang is die route in het echt?', unit:'m'},
-    {name:'dolfijnenshow', text:'Op een plattegrond van een dolfinarium staat de schaal 1 : {S}. Het bassin voor de show is {C} cm lang op de tekening. Hoe lang is het bassin in het echt?', unit:'m'},
-    {name:'vlindertuin', text:'Op een plattegrond van een vlindertuin staat de schaal 1 : {S}. Het pad door de tuin is {C} cm lang op de tekening. Hoe lang is dat pad in het echt?', unit:'m'},
-    {name:'hotel', text:'Op een bouwtekening van een hotel staat de schaal 1 : {S}. De hotellobby is {C} cm breed op de tekening. Hoe breed is de lobby in het echt?', unit:'m'},
-    {name:'restaurant', text:'Op een bouwtekening van een restaurant staat de schaal 1 : {S}. De bar is {C} cm lang op de tekening. Hoe lang is de bar in het echt?', unit:'cm'},
-    {name:'bioscoop', text:'Op een plattegrond van een bioscoop staat de schaal 1 : {S}. De zaal is {C} cm breed op de tekening. Hoe breed is de zaal in het echt?', unit:'m'},
-    {name:'theater', text:'Op een plattegrond van een theater staat de schaal 1 : {S}. Het toneel is {C} cm breed op de tekening. Hoe breed is het toneel in het echt?', unit:'m'},
-    {name:'concertzaal', text:'Op een plattegrond van een concertzaal staat de schaal 1 : {S}. Het podium is {C} cm diep op de tekening. Hoe diep is het podium in het echt?', unit:'m'},
-
-    {name:'haventerrein', text:'Op een plattegrond van een haventerrein staat de schaal 1 : {S}. De kade is {C} cm lang op de tekening. Hoe lang is de kade in het echt?', unit:'m'},
-    {name:'jachthaven', text:'Op een plattegrond van een jachthaven staat de schaal 1 : {S}. De steiger is {C} cm lang op de tekening. Hoe lang is de steiger in het echt?', unit:'m'},
-    {name:'vliegveld', text:'Op een plattegrond van een vliegveld staat de schaal 1 : {S}. De wachtruimte is {C} cm breed op de tekening. Hoe breed is de wachtruimte in het echt?', unit:'m'},
-    {name:'campus', text:'Op een plattegrond van een campus staat de schaal 1 : {S}. Het plein tussen de gebouwen is {C} cm breed op de tekening. Hoe breed is dat plein in het echt?', unit:'m'},
-    {name:'winkelcentrum', text:'Op een plattegrond van een winkelcentrum staat de schaal 1 : {S}. De hoofdgang is {C} cm lang op de tekening. Hoe lang is die gang in het echt?', unit:'m'},
-    {name:'marktplein', text:'Op een plattegrond van een marktplein staat de schaal 1 : {S}. De rij kramen is {C} cm lang op de tekening. Hoe lang is die rij in het echt?', unit:'m'},
-    {name:'brandweerkazerne', text:'Op een bouwtekening van een brandweerkazerne staat de schaal 1 : {S}. De garage voor de brandweerwagens is {C} cm breed op de tekening. Hoe breed is die garage in het echt?', unit:'m'},
-    {name:'politiebureau', text:'Op een plattegrond van een politiebureau staat de schaal 1 : {S}. De baliehal is {C} cm breed op de tekening. Hoe breed is de hal in het echt?', unit:'m'},
-    {name:'postkantoor', text:'Op een bouwtekening van een postkantoor staat de schaal 1 : {S}. De pakketbalie is {C} cm lang op de tekening. Hoe lang is de balie in het echt?', unit:'cm'},
-    {name:'bakkerij', text:'Op een bouwtekening van een bakkerij staat de schaal 1 : {S}. De ovenwand is {C} cm breed op de tekening. Hoe breed is die wand in het echt?', unit:'cm'}
+    {name:'klas', text:'In een klas van {B} leerlingen is {P}% klaar met het werk. Hoeveel leerlingen zijn dat?', unit:'leerlingen'},
+    {name:'winkel', text:'In een winkel kost een jas {B} euro. Je krijgt {P}% korting. Hoeveel euro korting krijg je?', unit:'euro'},
+    {name:'bibliotheek', text:'Van de {B} boeken in de kast is {P}% uitgeleend. Hoeveel boeken zijn uitgeleend?', unit:'boeken'},
+    {name:'schoolplein', text:'Op het schoolplein spelen {B} kinderen. {P}% speelt voetbal. Hoeveel kinderen zijn dat?', unit:'kinderen'},
+    {name:'voetbalclub', text:'Bij een voetbalclub zijn er {B} leden. {P}% komt naar de training. Hoeveel leden zijn dat?', unit:'leden'},
+    {name:'museum', text:'Een museum heeft vandaag {B} bezoekers. {P}% kiest een rondleiding. Hoeveel bezoekers zijn dat?', unit:'bezoekers'},
+    {name:'sparen', text:'Je hebt {B} euro spaargeld. Je gebruikt {P}% om iets te kopen. Hoeveel euro gebruik je?', unit:'euro'},
+    {name:'dierentuin', text:'In de dierentuin zijn vandaag {B} kaartjes verkocht. {P}% is een kinderticket. Hoeveel kindertickets zijn dat?', unit:'kaartjes'},
+    {name:'camping', text:'Op een camping zijn {B} plekken. {P}% is bezet. Hoeveel plekken zijn bezet?', unit:'plekken'},
+    {name:'toets', text:'Een toets heeft {B} punten. Je hebt {P}% gehaald. Hoeveel punten zijn dat?', unit:'punten'},
+    {name:'fruit', text:'In de kantine liggen {B} stuks fruit. {P}% zijn appels. Hoeveel appels zijn dat?', unit:'appels'},
+    {name:'leestijd', text:'Van de {B} minuten leestijd is {P}% al voorbij. Hoeveel minuten is dat?', unit:'minuten'}
   ];
 }
 
       function makeSection3(rng, s, used){
         var list = [];
         var temp = contextTemplates();
-        var draws = drawingValues(s.minCm, s.maxCm);
+        var bases = drawingValues(s.minCm, s.maxCm);
         var candidates = [];
-        var i, j, k, meters, answer, ok, shuffled;
+        var i, j, k, result, ok, shuffled;
 
         for(i=0;i<temp.length;i++){
           for(j=0;j<s.scales.length;j++){
-            for(k=0;k<draws.length;k++){
-              meters = (draws[k] * s.scales[j]) / 100;
-              answer = temp[i].unit === 'm' ? meters : draws[k] * s.scales[j];
-              ok = temp[i].unit === 'm' ? (s.meterMode === 'pretty' ? prettyMeter(meters) : true) : true;
+            for(k=0;k<bases.length;k++){
+              result = (bases[k] * s.scales[j]) / 100;
+              ok = s.meterMode === 'whole' ? isWholeResult(result) : true;
               if(ok){
                 candidates.push({
                   text:temp[i].text,
                   unit:temp[i].unit,
-                  scale:s.scales[j],
-                  drawCm:draws[k],
-                  answer:Math.round(answer * 100) / 100,
-                  key:'s3|' + temp[i].name + '|' + s.scales[j] + '|' + draws[k] + '|' + temp[i].unit
+                  percent:s.scales[j],
+                  base:bases[k],
+                  answer:Math.round(result * 100) / 100,
+                  key:'s3|' + temp[i].name + '|' + s.scales[j] + '|' + bases[k]
                 });
               }
             }
@@ -930,8 +954,8 @@ function contextTemplates(){
         };
       }
 
-      function fillTemplate(txt, scale, drawCm){
-        return txt.replace('{S}', scale).replace('{C}', formatNl(drawCm));
+      function fillTemplate(txt, percent, base){
+        return txt.replace('{P}', formatNl(percent)).replace('{B}', formatNl(base));
       }
 
       function getVisibleSections(data){
@@ -939,23 +963,23 @@ function contextTemplates(){
         if(data.s1.length){
           sections.push({
             type:'cm',
-            title:'Reken uit',
-            subtitle:'Antwoorden in centimeters',
+            title:'Kale procentensommen',
+            subtitle:'Reken uit',
             items:data.s1
           });
         }
         if(data.s2.length){
           sections.push({
             type:'m',
-            title:'Reken uit en reken om',
-            subtitle:'Antwoorden in meters',
+            title:'Procenten van een hoeveelheid',
+            subtitle:'Met passende eenheden',
             items:data.s2
           });
         }
         if(data.s3.length){
           sections.push({
             type:'context',
-            title:'Schaal in context',
+            title:'Contextopgaven met procenten',
             subtitle:'Verhaalsommen',
             items:data.s3
           });
@@ -982,18 +1006,23 @@ function contextTemplates(){
         var item = entry.item;
         var h = '';
         h += '<div class="md-item">';
-        h += '<div class="md-scale-line">' + entry.index + '. Schaal 1 : ' + esc(item.scale) + '</div>';
-        h += '<div>' + formatNl(item.drawCm) + ' cm op de tekening = ';
-        if(answers){
-          if(unitKey === 'cm'){
-            h += '<strong>' + formatNl(item.answerCm) + ' cm</strong>';
+        if(unitKey === 'kaal'){
+          h += '<div><strong>' + entry.index + '.</strong> ' + formatNl(item.percent) + '% van ' + formatNl(item.base) + ' = ';
+          if(answers){
+            h += '<strong>' + formatNl(item.answer) + '</strong>';
           } else {
-            h += '<strong>' + formatNl(item.answerM) + ' m</strong>';
+            h += '<span class="md-blank"></span>';
           }
+          h += '</div>';
         } else {
-          h += '<span class="md-blank"></span> ' + unitKey;
+          h += '<div><strong>' + entry.index + '.</strong> ' + formatNl(item.percent) + '% van ' + formatNl(item.base) + ' ' + esc(item.unit) + ' = ';
+          if(answers){
+            h += '<strong>' + formatNl(item.answer) + ' ' + esc(item.unit) + '</strong>';
+          } else {
+            h += '<span class="md-blank"></span> ' + esc(item.unit);
+          }
+          h += '</div>';
         }
-        h += ' in het echt</div>';
         h += '</div>';
         return h;
       }
@@ -1031,7 +1060,7 @@ function contextTemplates(){
 
         for(i=0;i<list.length;i++){
           item = list[i];
-          txt = fillTemplate(item.text, item.scale, item.drawCm);
+          txt = fillTemplate(item.text, item.percent, item.base);
           h += '<div class="md-context-item">';
           h += '<strong>' + (i+1) + '.</strong> ' + esc(txt);
           h += '<div class="md-answer-line">Antwoord: ';
@@ -1055,9 +1084,9 @@ function contextTemplates(){
         for(i = 0; i < sections.length; i++){
           section = sections[i];
           if(section.type === 'cm'){
-            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'cm');
+            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'kaal');
           } else if(section.type === 'm'){
-            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'm');
+            h += renderStandardSection(i + 1, section.title, section.subtitle, section.items, answers, 'hoeveelheid');
           } else {
             h += renderContextSection(i + 1, section.title, section.subtitle, section.items, answers);
           }
@@ -1082,7 +1111,7 @@ function contextTemplates(){
         var h = '';
         h += '<div class="md-page' + (answers && !answersVisible ? ' md-hidden' : '') + '">';
         h += '<div class="md-page-head">';
-        h += '<div><h3 class="md-page-title">' + (answers ? 'Antwoordenblad' : 'Leerlingblad') + '</h3><div class="md-sub">Rekenen met schaal</div></div>';
+        h += '<div><h3 class="md-page-title">' + (answers ? 'Antwoordenblad' : 'Leerlingblad') + '</h3><div class="md-sub">Rekenen met procenten</div></div>';
         h += '</div>';
 
         h += renderInfoBlock(answers);
@@ -1124,7 +1153,8 @@ function contextTemplates(){
 
       function fitsOnOneA4(settings){
         var measuredHeight = measureStudentPageHeight(settings);
-        return measuredHeight <= getPrintablePageHeightPx();
+        var safeLimit = getPrintablePageHeightPx() + getFitTolerancePx();
+        return measuredHeight <= safeLimit;
       }
 
       function fitStatus(settings){
@@ -1160,7 +1190,7 @@ function contextTemplates(){
         var total = data.s1.length + data.s2.length + data.s3.length;
 
         if(!total){
-          boxPages.innerHTML = '<div class="md-empty">Er konden geen passende opgaven worden gemaakt met deze instellingen. Kies bijvoorbeeld meer schalen, een groter bereik of zet kommagetallen toe.</div>';
+          boxPages.innerHTML = '<div class="md-empty">Er konden geen passende opgaven worden gemaakt met deze instellingen. Kies bijvoorbeeld meer percentages, een groter bereik of zet kommagetallen toe.</div>';
           return;
         }
 
@@ -1188,7 +1218,7 @@ function contextTemplates(){
         if(!fitsOnOneA4(s)){
           boxStatus.innerHTML = 'De gekozen combinatie is te groot.';
           showError(buildTooLargeMessage(s));
-          boxPages.innerHTML = '<div class="md-empty">Deze combinatie past niet netjes op 1 A4 leerlingblad. Pas de aantallen aan en probeer opnieuw.</div>';
+          boxPages.innerHTML = '<div class="md-empty">Deze combinatie past niet netjes op 1 A4 leerlingblad. Pas de aantallen per onderdeel aan en probeer opnieuw.</div>';
           return;
         }
 
@@ -1223,6 +1253,12 @@ function contextTemplates(){
       }
 
       try{
+        normalizeTopTitle();
+
+        if(!requiredElementsOk()){
+          throw new Error('Niet alle benodigde elementen zijn gevonden in de pagina-structuur. Controleer of de volledige index.html geladen is.');
+        }
+
         btnGen.onclick = function(){
           generate(false);
         };
