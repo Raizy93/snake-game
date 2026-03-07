@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MeesterDanny - Werkblad-generator: Procenten</title>
+  <title>MeesterDanny werkblad-generator - procenten</title>
   <style>
     #md-schaaltool-x91824{
       font-family:Arial,Helvetica,sans-serif;
@@ -466,6 +467,7 @@
     <div class="md-top">
       <div>
         <h2 class="md-title">MeesterDanny - Werkblad-generator: Procenten</h2>
+        <h2 class="md-title">MeesterDanny werkblad-generator</h2>
         <p class="md-sub">Rekenen met procenten • groep 7/8 • compacte weergave</p>
       </div>
       <div class="md-badge">Bereken percentages snel en compact</div>
@@ -698,6 +700,8 @@
         }
         if(!vals.length){
           vals = pushByStep(1);
+        for(i=start;i<=end;i++){
+          vals.push(i);
         }
 
         return vals;
