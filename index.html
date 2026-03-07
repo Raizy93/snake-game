@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MeesterDanny - Werkblad-generator: Procenten</title>
+  <title>MeesterDanny werkblad-generator - procenten</title>
   <style>
     #md-schaaltool-x91824{
       font-family:Arial,Helvetica,sans-serif;
@@ -532,14 +533,9 @@
               </div>
 
               <div class="md-field md-c6">
-                <label for="mdScales_x91824">Niveau percentages</label>
-                <select id="mdScales_x91824">
-                  <option value="basis">Basis - 10, 25, 50, 75%</option>
-                  <option value="gevorderd">Gevorderd - alle vijf- en tientallen t/m 100%</option>
-                  <option value="moeilijk">Moeilijk - willekeurig tussen 1 en 100%</option>
-                  <option value="zeer-moeilijk">Zeer moeilijk - willekeurig tussen 0 en 100%, ook halve procenten</option>
-                </select>
-                <div class="md-help">Kies een niveau; de generator gebruikt automatisch bijpassende percentages.</div>
+                <label for="mdScales_x91824">Toegestane percentages</label>
+                <input id="mdScales_x91824" type="text" value="1,5,10,20,25,50,75">
+                <div class="md-help">Bijvoorbeeld: 1,5,10,20,25,50,75</div>
               </div>
             </div>
           </div>
@@ -685,15 +681,14 @@
 
       function parseScales(value){
         var out = [];
-        var i;
-
-        if(value === 'basis'){
-          return [10,25,50,75];
-        }
-
-        if(value === 'gevorderd'){
-          for(i=5;i<=100;i+=5){
-            out.push(i);
+        var seen = {};
+        var i, n, key;
+        for(i=0;i<parts.length;i++){
+          n = parseFloat(String(parts[i]).replace(/\s+/g,'').replace(',', '.'));
+          key = String(n);
+          if(!isNaN(n) && n > 0 && n <= 100 && !seen[key]){
+            out.push(n);
+            seen[key] = true;
           }
           return out;
         }
@@ -762,7 +757,7 @@
       function validate(s){
         if(s.minCm <= 0 || s.maxCm <= 0){ return 'Minimum en maximum moeten groter zijn dan 0.'; }
         if(s.minCm > s.maxCm){ return 'Het minimum mag niet groter zijn dan het maximum.'; }
-        if(!s.scales.length){ return 'Kies een geldig percentage-niveau.'; }
+        if(!s.scales.length){ return 'Vul minstens één geldig percentage in.'; }
         if(!s.inc1 && !s.inc2 && !s.inc3){ return 'Zet minstens één onderdeel aan.'; }
         return '';
       }
