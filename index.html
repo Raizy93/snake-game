@@ -600,6 +600,23 @@
       var fitPill = get('mdFitPill_x91824');
       var fitText = get('mdFitText_x91824');
 
+      function normalizeTopTitle(){
+        var titleEl = root.querySelector('.md-title');
+        if(!titleEl){ return; }
+        var clean = String(titleEl.textContent || '')
+          .replace(/MeesterDanny\s+werkblad-generator/gi,'')
+          .replace(/\n+/g,' ')
+          .replace(/\s{2,}/g,' ')
+          .trim();
+        if(clean){
+          titleEl.textContent = clean;
+        }
+      }
+
+      function requiredElementsOk(){
+        return !!(elCount1 && elCount2 && elCount3 && elMin && elMax && elScales && elMeter && elInc1 && elInc2 && elInc3 && btnGen && btnNew && btnAns && btnPrint && boxStatus && boxError && boxPages && boxMeasure && fitPill && fitText);
+      }
+
       var versionCounter = 0;
       var answersVisible = false;
       var currentData = null;
@@ -692,6 +709,16 @@
             local.push(i);
           }
           return local;
+        }
+
+        vals = pushByStep(10);
+        if(!vals.length){
+          vals = pushByStep(5);
+        }
+        if(!vals.length){
+          vals = pushByStep(1);
+        }
+
         }
 
         vals = pushByStep(10);
@@ -1206,6 +1233,12 @@ function contextTemplates(){
       }
 
       try{
+        normalizeTopTitle();
+
+        if(!requiredElementsOk()){
+          throw new Error('Niet alle benodigde elementen zijn gevonden in de pagina-structuur. Controleer of de volledige index.html geladen is.');
+        }
+
         btnGen.onclick = function(){
           generate(false);
         };
